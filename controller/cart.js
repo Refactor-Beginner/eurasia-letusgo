@@ -51,18 +51,18 @@ var addToCart = function(req, res) {
       return cartItem.item._id.toString() === id;
     });
 
-    if(result) {
-      number = result.number + number;
-    }
+    if(result){
 
-    CartItem.update({item: id}, {$set: {number: number}}, {upsert: true}, function(err, cartItem) {
-      if(!result) {
-        cart.cartItems.push(cartItem.upserted[0]._id);
-      }
-      cart.save(function() {
-        res.sendStatus(200);
+      number += result.number;
+      CartItem.update({item: id}, {$set: {number: number}}, function(){
+        res.send('修改数量成功！');
       });
-    });
+    }else{
+
+      CartItem.update({item: id}, {$set: {number: number}}, {upsert: true}, function(){
+        res.send('成功添加新商品到购物车！');
+      });
+    }
   });
 };
 
