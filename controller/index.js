@@ -44,21 +44,21 @@ function getSubCategories(categories, mainCategories) {
   return mainCategories;
 }
 
-function rederIndexPage(res, mainCategories, currentCategory, items, pageCount, currentPage, isCategory) {
+function renderIndexPage(renderObject) {
 
-  res.render('index', {
-    mainCategories: mainCategories,
-    currentCategory: currentCategory,
-    items: items,
-    pageCount: pageCount,
-    currentPage: currentPage,
-    isCategory: isCategory
+  renderObject.res.render('index', {
+    mainCategories: renderObject.mainCategories,
+    currentCategory: renderObject.currentCategory,
+    items: renderObject.items,
+    pageCount: renderObject.pageCount,
+    currentPage: renderObject.pageNumber,
+    isCategory: renderObject.isCategory
   });
 }
 
-function initCategories(res, query, start, pageSize, currentCategory, pageNumber, isCategory) {
+function initCategories(initItemsObject, renderObject) {
 
-  initItems(query, start, pageSize, function(items, pageCount) {
+  initItems(initItemsObject.query, initItemsObject.start, initItemsObject.pageSize, function(items, pageCount) {
 
     Category.find()
       .populate('parent')
@@ -71,14 +71,36 @@ function initCategories(res, query, start, pageSize, currentCategory, pageNumber
         });
         mainCategories = getSubCategories(categories, mainCategories);
 
-        rederIndexPage(res, mainCategories, currentCategory, items, pageCount, pageNumber, isCategory);
+        renderIndexPage(
+          {
+            res: renderObject.res,
+            mainCategories: mainCategories,
+            currentCategory: renderObject.currentCategory,
+            items: items,
+            pageCount: pageCount,
+            pageNumber: renderObject.pageNumber,
+            isCategory: renderObject.isCategory
+          });
       });
   });
 }
 
 var getIndexInfo = function(req, res) {
   var currentCategory = {isDisplay: false, name: '', parent: {name: ''}};
-  initCategories(res, {isRecommend: true}, 0, PAGE_SIZE, currentCategory, 1, false);
+
+  var initItemsObject = {
+    query: {isRecommend: true},
+    start: 0,
+    pageSize: PAGE_SIZE
+  };
+
+  var renderObject = {
+    res: res,
+    currentCategory: currentCategory,
+    pageNumber: 1,
+    isCategory: false
+  };
+  initCategories(initItemsObject, renderObject);
 };
 
 var getRecommendItemsByPageNumber = function(req, res) {
@@ -87,7 +109,18 @@ var getRecommendItemsByPageNumber = function(req, res) {
   var start = (pageNumber - 1) * PAGE_SIZE;
   var currentCategory = {isDisplay: false, name: '', parent: {name: ''}};
 
-  initCategories(res, {isRecommend: true}, start, PAGE_SIZE, currentCategory, pageNumber, false);
+  var initItemsObject = {
+    query: {isRecommend: true},
+    start: start,
+    pageSize: PAGE_SIZE
+  };
+  var renderObject = {
+    res: res,
+    currentCategory: currentCategory,
+    pageNumber: pageNumber,
+    isCategory: false
+  };
+  initCategories(initItemsObject, renderObject);
 };
 
 var getItemsByCategoryId = function(req, res) {
@@ -102,7 +135,18 @@ var getItemsByCategoryId = function(req, res) {
       currentCategory = category;
       currentCategory.isDisplay = true;
 
-      initCategories(res, {category: id}, 0, PAGE_SIZE, currentCategory, 1, true);
+      var initItemsObject = {
+        query: {category: id},
+        start: 0,
+        pageSize: PAGE_SIZE
+      };
+      var renderObject = {
+        res: res,
+        currentCategory: currentCategory,
+        pageNumber: 1,
+        isCategory: true
+      };
+      initCategories(initItemsObject, renderObject);
     });
 };
 
@@ -121,7 +165,18 @@ var getItemsByCategoryIdAndPageNumber = function(req, res) {
       currentCategory = category;
       currentCategory.isDisplay = true;
 
-      initCategories(res, {category: id}, start, PAGE_SIZE, currentCategory, pageNumber, true);
+      var initItemsObject = {
+        query: {category: id},
+        start: start,
+        pageSize: PAGE_SIZE
+      };
+      var renderObject = {
+        res: res,
+        currentCategory: currentCategory,
+        pageNumber: pageNumber,
+        isCategory: true
+      };
+      initCategories(initItemsObject, renderObject);
     });
 };
 

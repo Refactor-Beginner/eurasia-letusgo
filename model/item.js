@@ -3,6 +3,11 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+
+function setPrice(num) {
+  return num.toFixed(2);
+}
+
 var ItemSchema = new Schema({
   name: String,
   unit: String,
@@ -17,10 +22,6 @@ var ItemSchema = new Schema({
   inventory: Number,
   isRecommend: Boolean
 });
-
-function setPrice(num) {
-  return num.toFixed(2);
-}
 
 ItemSchema.methods.getId = function(item) {
   return item._id;
