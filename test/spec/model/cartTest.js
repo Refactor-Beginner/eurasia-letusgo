@@ -25,6 +25,6 @@ describe('cart model', function(){
   });
 
   it('should get total of cartItems', function(){
-    expect(cart.getTotal(cartItems)).to.equal('617');
+    expect(cart.getTotal(cartItems)).to.equal(120);
   });
 });

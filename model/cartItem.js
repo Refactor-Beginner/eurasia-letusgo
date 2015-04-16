@@ -19,7 +19,6 @@ CartItemSchema.methods.getSubtotal = function() {
 
 CartItemSchema.methods.getItemId = function(cartItem) {
 
-  //console.log((cartItem.item).getId());
   var item = new Item();
   return item.getId(cartItem.item);
 };
