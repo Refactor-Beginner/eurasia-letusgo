@@ -19,9 +19,21 @@ var reloadDatabase = function() {
       console.log(err);
     }
   });
-  Cart.remove({});
-  Category.remove({});
-  Indent.remove({});
+  Cart.remove({}, function(err, carts) {
+    if(err) {
+      console.log(err);
+    }
+  });
+  Category.remove({}, function(err, categories) {
+    if(err) {
+      console.log(err);
+    }
+  });
+  Indent.remove({}, function(err, indents) {
+    if(err) {
+      console.log(err);
+    }
+  });
 
   Item.create(items);
   CartItem.create(cartItems);

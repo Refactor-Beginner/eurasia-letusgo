@@ -1,5 +1,7 @@
 'use strict';
 
+var cartController = require('../../../controller/cart');
+
 describe('cart', function() {
 
   afterEach(function() {
@@ -10,8 +12,6 @@ describe('cart', function() {
 
     var resMock = {};
     var reqMock = {};
-
-    var cartController = require('../../../controller/cart');
 
     it('shoulde return cart', function(done) {
 
