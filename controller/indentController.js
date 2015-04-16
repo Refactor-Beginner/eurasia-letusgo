@@ -6,66 +6,74 @@ var FormatUtil = require('../util/formatUtil.js');
 
 var NAME_LENGTH = 16;
 
+function throwError(err) {
+  if(err) {
+    throw err;
+  }
+}
+
+function getTotal(indent, query, done) {
+  Item.populate(indent, query, function(err) {
+
+    throwError(err);
+    done(indent.getTotal(indent.cartItems));
+  });
+}
+
+function getIndentById(done) {
+  Indent.findById('551fd16975cd55ed0cfa5503')
+    .populate('cartItems')
+    .exec(function(err, indent) {
+
+      throwError(err);
+      done(indent);
+    });
+}
+
 function getShortedCartItemName(cartItems) {
 
   var shortedCartItemName = '';
 
   cartItems.forEach(function(cartItem) {
+
     if(cartItem.number > cartItem.item.inventory) {
       shortedCartItemName += cartItem.item.name + '、';
     }
   });
-
   return shortedCartItemName.substring(0, shortedCartItemName.length - 1);
 }
 
 var getIndent = function(req, res) {
 
-  Indent.findById('551fd16975cd55ed0cfa5503')
-    .populate('cartItems')
-    .exec(function(err, indent) {
+  getIndentById(function(indent) {
 
-      Item.populate(indent, 'cartItems.item', function(err) {
-
-        if(err) {
-          throw err;
-        }
-
-        var total = indent.getTotal(indent.cartItems);
-        res.send({indent: indent, total: total});
-      });
+    getTotal(indent, 'cartItems.item', function(total) {
+      res.send({indent: indent, total: total});
     });
+  });
 };
 
 var renderIndentPage = function(req, res) {
 
-  Indent.findById('551fd16975cd55ed0cfa5503')
-    .populate('cartItems')
-    .exec(function(err, indent) {
+  getIndentById(function(indent) {
 
-      Item.populate(indent, 'cartItems.item', function(err) {
-        if(err) {
-          throw err;
-        }
+    getTotal(indent, 'cartItems.item', function(total) {
 
-        indent.cartItems.forEach(function(cartItem) {
-          cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, NAME_LENGTH);
-        });
+      indent.cartItems.forEach(function(cartItem) {
+        cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, NAME_LENGTH);
+      });
 
-        var total = indent.getTotal(indent.cartItems);
-        var shortedCartItemName = getShortedCartItemName(indent.cartItems);
+      var shortedCartItemName = getShortedCartItemName(indent.cartItems);
 
-        res.render('indent', {
-          cartItems: indent.cartItems,
-          total: total,
-          indent: indent,
-          shortedCartItemName: shortedCartItemName
-        });
+      res.render('indent', {
+        cartItems: indent.cartItems,
+        total: total,
+        indent: indent,
+        shortedCartItemName: shortedCartItemName
       });
     });
-
+  });
 };
-
 
 module.exports = {
   getIndent: getIndent,
