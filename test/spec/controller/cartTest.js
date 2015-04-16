@@ -4,14 +4,22 @@ var cartController = require('../../../controller/cart');
 
 describe('cart', function() {
 
+  var resMock = {};
+  var reqMock = {};
+
+  beforeEach(function(done){
+
+    resMock = {};
+    reqMock = {};
+
+    done();
+  });
+
   afterEach(function() {
     reloadDatabase();
   });
 
   describe('getCart', function() {
-
-    var resMock = {};
-    var reqMock = {};
 
     it('shoulde return cart', function(done) {
 
@@ -31,16 +39,11 @@ describe('cart', function() {
 
   describe('addToCart', function() {
 
-    var resMock = {};
-    var reqMock = {};
-
-    var cartController = require('../../../controller/cart');
 
     it('shoulde return modify the number when cartItem has existed', function(done) {
 
       reqMock.body = {number: 6};
       reqMock.params = {id: '5523cea79294d58a8e06c3bf'};
-
 
       resMock.send = function(info){
 
@@ -64,6 +67,11 @@ describe('cart', function() {
 
       cartController.addToCart(reqMock, resMock);
     });
+  });
+
+  describe('changeCartItem controller', function(){
+    it('')
+
   });
 });
 

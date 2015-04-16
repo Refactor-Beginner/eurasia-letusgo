@@ -59,10 +59,12 @@ var addToCart = function(req, res) {
       });
     }else{
 
-      CartItem.update({item: id}, {$set: {number: number}}, {upsert: true}, function(){
+      CartItem.update({item: id}, {$set: {number: number}}, {upsert: true}, function(err, cartItem){
+        cart.cartItems.push(cartItem.upserted[0]._id);
         res.send('成功添加新商品到购物车！');
       });
     }
+
   });
 };
 
@@ -73,10 +75,13 @@ var changeCartItem = function(req, res) {
   var total = req.body.total;
 
   CartItem.findById(cartItemId, function(err, cartItem) {
+
     var current = cartItem.number * price;
-    CartItem.update({_id: cartItemId}, {$set: {number: number}}, {upsert: true}, function() {
+    CartItem.update({_id: cartItemId}, {$set: {number: number}}, function() {
+
       var subtotal = price * number;
       total = total - current + subtotal;
+
       res.send({subtotal: subtotal.toFixed(2), total: total.toFixed(2)});
 
     });
