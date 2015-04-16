@@ -10,7 +10,7 @@ exports.config = {
   /**
    * Array of application names.
    */
-  app_name: ['letusgo'],
+  app_name: ['letusgo-refactor'],
   /**
    * Your New Relic license key.
    */
