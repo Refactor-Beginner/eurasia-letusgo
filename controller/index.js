@@ -44,9 +44,9 @@ function getSubCategories(categories, mainCategories) {
   return mainCategories;
 }
 
-function renderIndexPage(res, renderObject) {
+function renderIndexPage(renderObject) {
 
-  res.render('index', {
+  renderObject.res.render('index', {
     mainCategories: renderObject.mainCategories,
     currentCategory: renderObject.currentCategory,
     items: renderObject.items,
@@ -56,8 +56,7 @@ function renderIndexPage(res, renderObject) {
   });
 }
 
-//function initCategories(res, query, start, pageSize, currentCategory, pageNumber, isCategory) {
-function initCategories(res, initItemsObject, currentCategory, pageNumber, isCategory) {
+function initCategories(initItemsObject, renderObject) {
 
   initItems(initItemsObject.query, initItemsObject.start, initItemsObject.pageSize, function(items, pageCount) {
 
@@ -72,14 +71,15 @@ function initCategories(res, initItemsObject, currentCategory, pageNumber, isCat
         });
         mainCategories = getSubCategories(categories, mainCategories);
 
-        renderIndexPage(res,
+        renderIndexPage(
           {
+            res: renderObject.res,
             mainCategories: mainCategories,
-            currentCategory: currentCategory,
+            currentCategory: renderObject.currentCategory,
             items: items,
             pageCount: pageCount,
-            pageNumber: pageNumber,
-            isCategory: isCategory
+            pageNumber: renderObject.pageNumber,
+            isCategory: renderObject.isCategory
           });
       });
   });
@@ -93,7 +93,14 @@ var getIndexInfo = function(req, res) {
     start: 0,
     pageSize: PAGE_SIZE
   };
-  initCategories(res, initItemsObject, currentCategory, 1, false);
+
+  var renderObject = {
+    res: res,
+    currentCategory: currentCategory,
+    pageNumber: 1,
+    isCategory: false
+  };
+  initCategories(initItemsObject, renderObject);
 };
 
 var getRecommendItemsByPageNumber = function(req, res) {
@@ -107,7 +114,13 @@ var getRecommendItemsByPageNumber = function(req, res) {
     start: start,
     pageSize: PAGE_SIZE
   };
-  initCategories(res, initItemsObject, currentCategory, pageNumber, false);
+  var renderObject = {
+    res: res,
+    currentCategory: currentCategory,
+    pageNumber: pageNumber,
+    isCategory: false
+  };
+  initCategories(initItemsObject, renderObject);
 };
 
 var getItemsByCategoryId = function(req, res) {
@@ -127,7 +140,13 @@ var getItemsByCategoryId = function(req, res) {
         start: 0,
         pageSize: PAGE_SIZE
       };
-      initCategories(res, initItemsObject, currentCategory, 1, true);
+      var renderObject = {
+        res: res,
+        currentCategory: currentCategory,
+        pageNumber: 1,
+        isCategory: true
+      };
+      initCategories(initItemsObject, renderObject);
     });
 };
 
@@ -151,7 +170,13 @@ var getItemsByCategoryIdAndPageNumber = function(req, res) {
         start: start,
         pageSize: PAGE_SIZE
       };
-      initCategories(res, initItemsObject, currentCategory, pageNumber, true);
+      var renderObject = {
+        res: res,
+        currentCategory: currentCategory,
+        pageNumber: pageNumber,
+        isCategory: true
+      };
+      initCategories(initItemsObject, renderObject);
     });
 };
 
