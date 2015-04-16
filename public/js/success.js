@@ -7,10 +7,10 @@ var JUMP_TIME = 3;
 
 function jump(jumpTime) {
 
-  window.setTimeout(function () {
+  window.setTimeout(function() {
     jumpTime--;
 
-    if (jumpTime > 0) {
+    if(jumpTime > 0) {
       $('#sec').text(jumpTime);
       jump(jumpTime);
     } else {
@@ -19,9 +19,9 @@ function jump(jumpTime) {
   }, 1000);
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
 
-  $.get('/api/indent', function (data) {
+  $.get('/api/indent', function(data) {
 
     var amount = data.total;
     $('#amount').text(amount);

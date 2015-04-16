@@ -24,13 +24,13 @@ function showShortage(shortedCartItemName) {
     .modal('show');
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
 
-  $('#pay').on('click', function () {
+  $('#pay').on('click', function() {
 
     var shortedCartItemName = $('#shortedCartItemName').text();
 
-    if (shortedCartItemName) {
+    if(shortedCartItemName) {
 
       showShortage(shortedCartItemName);
     } else {
@@ -39,21 +39,21 @@ $(document).ready(function () {
     }
   });
 
-  $('#isPaid').on('click', function () {
+  $('#isPaid').on('click', function() {
 
     //var total = $(this).data('total');
     var cartItems = $(this).data('cart');
 
-    $.get('/api/item', {cartItems: cartItems}, function (items) {
+    $.get('/api/item', {cartItems: cartItems}, function(items) {
 
-      cartItems.forEach(function (cartItem) {
-        items.forEach(function (item) {
+      cartItems.forEach(function(cartItem) {
+        items.forEach(function(item) {
 
           var number = cartItem.number;
           var inventory = item.inventory;
-          if (item._id === cartItem.item._id) {
+          if(item._id === cartItem.item._id) {
 
-            if (number < inventory) {
+            if(number < inventory) {
 
               $(location).attr('href', '/success');
               updateInventory(inventory, number, item);
@@ -69,10 +69,10 @@ $(document).ready(function () {
   });
 
   $('img')
-    .error(function () {
+    .error(function() {
       $(this).attr('src', '/image/missing.jpg');
     })
-    .attr('src', function () {
+    .attr('src', function() {
       return $(this).data('src');
     });
 });

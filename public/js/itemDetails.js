@@ -4,33 +4,33 @@ var $ = require('jquery');
 require('github/ziyiking/Semantic-UI@master/dist/semantic');
 var MAX_CART_AMOUNT = 99;
 
-$(document).ready(function () {
+$(document).ready(function() {
 
   $('img')
-    .error(function () {
+    .error(function() {
       $(this).attr('src', '/image/missing.jpg');
     })
-    .attr('src', function () {
+    .attr('src', function() {
       return $(this).data('src');
     });
 
-  $('i.minus').on('click', function () {
+  $('i.minus').on('click', function() {
     var numberInput = parseInt($('#numberInput').val());
-    if (numberInput !== 1) {
+    if(numberInput !== 1) {
       $('#numberInput').val(numberInput - 1);
     }
   });
 
-  $('i.add').on('click', function () {
+  $('i.add').on('click', function() {
     var numberInput = parseInt($('#numberInput').val());
     var inventory = $('#inventory').text();
 
-    if (inventory > numberInput) {
+    if(inventory > numberInput) {
       $('#numberInput').val(numberInput + 1);
     }
   });
 
-  $('#numberInput').on('change', function () {
+  $('#numberInput').on('change', function() {
     $('#inputError').hide();
     var numberInput = $('#numberInput').val();
     var number = numberInput.replace(/\b(0+)/gi, '');
@@ -38,12 +38,12 @@ $(document).ready(function () {
     $('#numberInput').val(number);
     verifyNumber(number);
 
-    if (isShorted()) {
+    if(isShorted()) {
       $('#inputError').show();
     }
   });
 
-  $('input.specification').on('click', function () {
+  $('input.specification').on('click', function() {
     var price = $(this).data('price');
     var inventory = $(this).data('inventory');
 
@@ -53,7 +53,7 @@ $(document).ready(function () {
 
   function verifyNumber(number) {
     var reg = /^(0|[1-9][0-9]*)$/;
-    if (!reg.exec(number)) {
+    if(!reg.exec(number)) {
       $('#numberInput').val(1);
     }
   }
@@ -65,16 +65,16 @@ $(document).ready(function () {
   }
 
   function countCartAmount() {
-    $.get('/cart/amount', function (data) {
-      if (MAX_CART_AMOUNT < parseInt(data.amount)) {
+    $.get('/cart/amount', function(data) {
+      if(MAX_CART_AMOUNT < parseInt(data.amount)) {
         data.amount = '99+';
       }
 
       $('#cart-amount').text(data.amount);
     });
   }
-  
-  $('.addToCart').on('click', function () {
+
+  $('.addToCart').on('click', function() {
 
     var itemId = $(this).data('id');
 
@@ -83,9 +83,9 @@ $(document).ready(function () {
 
     if(numberInput > inventory) {
       $('.inventory').show();
-        window.setTimeout(function () {
-          $('.inventory').hide();
-        },1000);
+      window.setTimeout(function() {
+        $('.inventory').hide();
+      }, 1000);
       return;
     }
 
@@ -93,13 +93,13 @@ $(document).ready(function () {
       url: '/cart/' + itemId,
       type: 'POST',
       data: {number: numberInput},
-      success: function () {
+      success: function() {
         countCartAmount();
         $('.success').show();
 
-        window.setTimeout(function () {
+        window.setTimeout(function() {
           $('.success').hide();
-        },1000);
+        }, 1000);
       }
     });
   });

@@ -6,7 +6,7 @@ require('github/ziyiking/Semantic-UI@master/dist/semantic');
 var deleteCartItem;
 var MAX_CART_AMOUNT = 99;
 
-$(function () {
+$(function() {
 
   function changeTotal(jqDom) {
     var id = jqDom.closest('tr').data('id');
@@ -20,7 +20,7 @@ $(function () {
       type: 'PUT',
       data: {number: num, price: price, total: total},
 
-      success: function (data) {
+      success: function(data) {
         input.closest('tr').find('#subtotal').text(data.subtotal);
         $('#total').text(data.total);
       }
@@ -30,7 +30,7 @@ $(function () {
   function verifyNumber(number, input) {
 
     var reg = /^(0|[1-9][0-9]*)$/;
-    if (!reg.exec(number)) {
+    if(!reg.exec(number)) {
       input.val(1);
     }
   }
@@ -46,14 +46,14 @@ $(function () {
   function getCartItemInventory(jqDom, callback) {
     var id = jqDom.closest('tr').data('id');
 
-    $.get('/cart/cartItems/' + id, function (data) {
+    $.get('/cart/cartItems/' + id, function(data) {
       callback(data);
     });
   }
 
   function countCartAmount() {
-    $.get('/cart/amount', function (data) {
-      if (MAX_CART_AMOUNT < parseInt(data.amount)) {
+    $.get('/cart/amount', function(data) {
+      if(MAX_CART_AMOUNT < parseInt(data.amount)) {
         data.amount = '99+';
       }
 
@@ -62,60 +62,60 @@ $(function () {
   }
 
   $('img')
-    .error(function () {
+    .error(function() {
       $(this).attr('src', '/image/missing.jpg');
     })
-    .attr('src', function () {
+    .attr('src', function() {
       return $(this).data('src');
     });
 
-  $('#allChecked').on('change', function () {
+  $('#allChecked').on('change', function() {
 
-    $('input[name="checkedCartItem"]').prop('checked',this.checked);
+    $('input[name="checkedCartItem"]').prop('checked', this.checked);
 
   });
 
-  $('.checkedCartItem').on('blur', function () {
+  $('.checkedCartItem').on('blur', function() {
 
     var isChecked = $(this).prop('checked');
-    if (!isChecked) {
+    if(!isChecked) {
       $('#allChecked').prop('checked', false);
     }
 
     var isAllChecked = true;
     var checkboxes = $('input[name="checkedCartItem"]');
 
-    for (var i = 0; i < checkboxes.length; i++) {
+    for(var i = 0; i < checkboxes.length; i++) {
       isAllChecked = checkboxes[i].checked;
-      if (!isAllChecked) {
+      if(!isAllChecked) {
         return;
       }
     }
 
-    if (isAllChecked) {
+    if(isAllChecked) {
       $('#allChecked').prop('checked', true);
     }
 
   });
 
-  $('.reduce').on('click', function () {
+  $('.reduce').on('click', function() {
     var inputDom = $(this).closest('td').find('.number');
     var numberInput = parseInt(inputDom.val());
 
-    if (numberInput !== 1) {
+    if(numberInput !== 1) {
       inputDom.val(numberInput - 1);
       changeTotal($(this));
     }
     countCartAmount();
   });
 
-  $('.increase').on('click', function () {
+  $('.increase').on('click', function() {
     var $this = $(this);
     var inputDom = $this.closest('td').find('.number');
     var numberInput = parseInt(inputDom.val());
 
-    getCartItemInventory($this, function (data) {
-      if (data.inventory > numberInput) {
+    getCartItemInventory($this, function(data) {
+      if(data.inventory > numberInput) {
         inputDom.val(numberInput + 1);
         changeTotal($($this));
       }
@@ -123,7 +123,7 @@ $(function () {
     });
   });
 
-  $('.number').on('change', function () {
+  $('.number').on('change', function() {
     var $this = $(this);
     $this.closest('td').find('.inventory').hide();
 
@@ -133,11 +133,9 @@ $(function () {
     var number = numberInput.val().replace(/\b(0+)/gi, '');
     numberInput.val(number);
 
-
-
     verifyNumber(number, $this);
 
-    if (isShorted($this)) {
+    if(isShorted($this)) {
       $this.closest('td').find('.inventory').show();
       $this.val(leftNumber);
     }
@@ -146,7 +144,7 @@ $(function () {
 
   });
 
-  $('.delete_cartItem').on('click', function () {
+  $('.delete_cartItem').on('click', function() {
 
     deleteCartItem = this;
 
@@ -154,7 +152,7 @@ $(function () {
       .modal('show');
   });
 
-  $('.yes').on('click', function () {
+  $('.yes').on('click', function() {
 
     var deleteId = deleteCartItem.closest('td').id;
 
@@ -162,11 +160,11 @@ $(function () {
       url: 'cart/' + deleteId,
       type: 'DELETE',
 
-      success: function (data) {
+      success: function(data) {
         $('.delete-message').show();
         $(deleteCartItem.closest('tr').remove());
 
-        window.setTimeout(function () {
+        window.setTimeout(function() {
           $('.delete-message').hide();
         }, 1000);
 

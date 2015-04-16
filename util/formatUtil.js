@@ -1,7 +1,6 @@
 'use strict';
 
-var parseString = function (name, length) {
-
+var parseString = function(name, length) {
 
   var result = '';
   var nameLength = name.length;

@@ -7,16 +7,16 @@ describe('index', function() {
   var reqMock = {};
   var resMock = {};
 
-  afterEach(function(){
+  afterEach(function() {
 
     reloadDatabase();
   });
 
-  describe('getIndexInfo', function () {
+  describe('getIndexInfo', function() {
 
-    it('should return index page with data contains of mainCategories, items, pageCount and so on', function (done) {
+    it('should return index page with data contains of mainCategories, items, pageCount and so on', function(done) {
 
-      resMock.render = function(view, object){
+      resMock.render = function(view, object) {
 
         expect(view).to.equal('index');
         expect(object).to.have.property('mainCategories');
@@ -39,16 +39,16 @@ describe('index', function() {
     });
   });
 
-  describe('getRecommendItemsByPageNumber', function () {
+  describe('getRecommendItemsByPageNumber', function() {
 
-    it('should return recommend items in certain pageNumber', function (done) {
+    it('should return recommend items in certain pageNumber', function(done) {
 
-      reqMock.params =  {
+      reqMock.params = {
 
-        pageNumber : 2
+        pageNumber: 2
       };
 
-      resMock.render = function(view, object){
+      resMock.render = function(view, object) {
 
         expect(view).to.equal('index');
         expect(object).to.have.property('mainCategories');
@@ -71,16 +71,16 @@ describe('index', function() {
     });
   });
 
-  describe('getItemsByCategoryId', function () {
+  describe('getItemsByCategoryId', function() {
 
-    it('should return items of a certain category', function (done) {
+    it('should return items of a certain category', function(done) {
 
-      reqMock.params =  {
+      reqMock.params = {
 
-        id : '5523bc489294d58a8e06c387'
+        id: '5523bc489294d58a8e06c387'
       };
 
-      resMock.render = function(view, object){
+      resMock.render = function(view, object) {
 
         expect(view).to.equal('index');
         expect(object).to.have.property('mainCategories');
@@ -104,17 +104,17 @@ describe('index', function() {
     });
   });
 
-  describe('getItemsByCategoryIdAndPageNumber', function () {
+  describe('getItemsByCategoryIdAndPageNumber', function() {
 
-    it('should return items of a certain and a certain pageNumber', function (done) {
+    it('should return items of a certain and a certain pageNumber', function(done) {
 
-      reqMock.params =  {
+      reqMock.params = {
 
-        id : '5523bc489294d58a8e06c387',
+        id: '5523bc489294d58a8e06c387',
         pageNumber: 2
       };
 
-      resMock.render = function(view, object){
+      resMock.render = function(view, object) {
 
         expect(view).to.equal('index');
         expect(object).to.have.property('mainCategories');

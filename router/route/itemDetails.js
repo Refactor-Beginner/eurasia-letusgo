@@ -5,8 +5,7 @@ var router = express.Router();
 
 var getItem = require('../../controller/getItem.js');
 
-
-router.get('/:id', function (req, res) {
+router.get('/:id', function(req, res) {
 
   getItem(req, res);
 });

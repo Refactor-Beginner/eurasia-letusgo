@@ -2,7 +2,7 @@
 
 describe('cart', function() {
 
-  afterEach(function(){
+  afterEach(function() {
     reloadDatabase();
   });
 
@@ -15,7 +15,7 @@ describe('cart', function() {
 
     it('shoulde return cart', function(done) {
 
-      resMock.render = function(view, object){
+      resMock.render = function(view, object) {
 
         expect(view).to.equal('cart');
         expect(object).to.have.property('cartItems');
@@ -38,9 +38,9 @@ describe('cart', function() {
 
     it('shoulde return cart', function(done) {
 
-      reqMock.body = {number:6};
+      reqMock.body = {number: 6};
       reqMock.params = {id: '5523cea79294d58a8e06c3bf'};
-      
+
       resMock.sendStatus = function(object) {
         expect(object).to.equal(200);
 

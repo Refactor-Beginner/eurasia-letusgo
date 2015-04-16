@@ -2,8 +2,8 @@
 
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/letusgoTest', function (err) {
-  if (err) {
+mongoose.connect('mongodb://localhost/letusgoTest', function(err) {
+  if(err) {
     console.log('connection error', err);
   } else {
     console.log('connection successful');

@@ -21,18 +21,18 @@ function getShortedCartItemName(cartItems) {
   return shortedCartItemName.substring(0, shortedCartItemName.length - 1);
 }
 
-router.get('/', function (req, res) {
+router.get('/', function(req, res) {
 
   Indent.findById('551fd16975cd55ed0cfa5503')
     .populate('cartItems')
-    .exec(function (err, indent) {
+    .exec(function(err, indent) {
 
-      Item.populate(indent, 'cartItems.item', function (err) {
+      Item.populate(indent, 'cartItems.item', function(err) {
         if(err) {
           throw err;
         }
 
-        indent.cartItems.forEach(function (cartItem) {
+        indent.cartItems.forEach(function(cartItem) {
           cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, NAME_LENGTH);
         });
 

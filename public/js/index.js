@@ -3,9 +3,9 @@
 var $ = require('./jquery.pagination');
 require('github/ziyiking/Semantic-UI@master/dist/semantic');
 
-$(function () {
+$(function() {
 
-  if (application.index.pageCount > 1) {
+  if(application.index.pageCount > 1) {
 
     var visiblePageCount = 7;
     $('.pagination').pagination({
@@ -13,10 +13,10 @@ $(function () {
       pageCount: application.index.pageCount,
       currentPage: application.index.currentPage,
       visiblePageCount: visiblePageCount,
-      onPageChange: function (n) {
+      onPageChange: function(n) {
 
         var path = '/index/';
-        if (application.index.isCategory) {
+        if(application.index.isCategory) {
 
           var pathId = location.href.toString().split('/')[4];
           path = '/categories/' + pathId + '/';
@@ -27,10 +27,10 @@ $(function () {
   }
 
   $('img')
-    .error(function () {
+    .error(function() {
       $(this).attr('src', '/image/missing.jpg');
     })
-    .attr('src', function () {
+    .attr('src', function() {
       return $(this).data('src');
     });
 
