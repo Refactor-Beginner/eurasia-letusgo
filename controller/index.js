@@ -44,15 +44,15 @@ function getSubCategories(categories, mainCategories) {
   return mainCategories;
 }
 
-function rederIndexPage(res, mainCategories, currentCategory, items, pageCount, currentPage, isCategory) {
+function renderIndexPage(res, renderObject) {
 
   res.render('index', {
-    mainCategories: mainCategories,
-    currentCategory: currentCategory,
-    items: items,
-    pageCount: pageCount,
-    currentPage: currentPage,
-    isCategory: isCategory
+    mainCategories: renderObject.mainCategories,
+    currentCategory: renderObject.currentCategory,
+    items: renderObject.items,
+    pageCount: renderObject.pageCount,
+    currentPage: renderObject.pageNumber,
+    isCategory: renderObject.isCategory
   });
 }
 
@@ -71,7 +71,15 @@ function initCategories(res, query, start, pageSize, currentCategory, pageNumber
         });
         mainCategories = getSubCategories(categories, mainCategories);
 
-        rederIndexPage(res, mainCategories, currentCategory, items, pageCount, pageNumber, isCategory);
+        renderIndexPage(res,
+          {
+            mainCategories: mainCategories,
+            currentCategory: currentCategory,
+            items: items,
+            pageCount: pageCount,
+            pageNumber: pageNumber,
+            isCategory: isCategory
+          });
       });
   });
 }
