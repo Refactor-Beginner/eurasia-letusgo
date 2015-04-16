@@ -64,7 +64,6 @@ var addToCart = function(req, res) {
         res.send('成功添加新商品到购物车！');
       });
     }
-
   });
 };
 

@@ -4,8 +4,8 @@ var cartController = require('../../../controller/cart');
 
 describe('cart', function() {
 
-  var resMock = {};
-  var reqMock = {};
+  var resMock;
+  var reqMock;
 
   beforeEach(function(done){
 
@@ -39,7 +39,6 @@ describe('cart', function() {
 
   describe('addToCart', function() {
 
-
     it('shoulde return modify the number when cartItem has existed', function(done) {
 
       reqMock.body = {number: 6};
@@ -70,7 +69,26 @@ describe('cart', function() {
   });
 
   describe('changeCartItem controller', function(){
-    it('')
+
+    it('should get subtotal', function(done){
+
+      reqMock.params = {id: '551cc20e47a654d14a280e9c'};
+      reqMock.body = {
+        price: 109,
+        number: 4,
+        total: 3334.50
+      };
+
+      resMock.send = function (object){
+
+        expect(object.subtotal).to.equal('436.00');
+        expect(object.total).to.equal('3552.50');
+
+        done();
+      };
+
+      cartController.changeCartItem(reqMock, resMock);
+    });
 
   });
 });
