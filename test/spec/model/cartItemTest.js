@@ -25,4 +25,9 @@ describe('cartItem model', function(){
 
     expect(cartItem.getSubtotal()).to.equal('218.00');
   });
+
+  it('should get the itemId of the cartItem', function(){
+
+    expect(cartItem.getItemId(cartItem).toString()).to.equal('5523cea79294d58a8e06c3c0');
+  });
 });
