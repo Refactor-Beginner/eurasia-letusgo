@@ -4,7 +4,7 @@
   "description": "",
   "main": "home.js",
   "scripts": {
-    "test": "istanbul cover _mocha ./test/**",
+    "test": "istanbul cover _mocha ./test/spec/**",
     "start": "nodemon ./bin/www"
   },
   "author": "",

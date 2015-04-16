@@ -1,6 +1,6 @@
 'use strict';
 
-var indexController = require('../../controller/index');
+var indexController = require('../../../controller/index');
 
 describe('index', function() {
 

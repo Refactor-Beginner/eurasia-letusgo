@@ -11,7 +11,7 @@ describe('cart', function() {
     var resMock = {};
     var reqMock = {};
 
-    var cartController = require('../../controller/cart');
+    var cartController = require('../../../controller/cart');
 
     it('shoulde return cart', function(done) {
 
@@ -34,7 +34,7 @@ describe('cart', function() {
     var resMock = {};
     var reqMock = {};
 
-    var cartController = require('../../controller/cart');
+    var cartController = require('../../../controller/cart');
 
     it('shoulde return cart', function(done) {
 

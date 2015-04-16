@@ -18,6 +18,6 @@ chai.use(sinonChai);
 
 global.request = require('supertest');
 global.sinon = require('sinon');
-global.reloadDatabase = require('./helper/reloadDatabase');
+global.reloadDatabase = require('./../helper/reloadDatabase');
 
 reloadDatabase();
