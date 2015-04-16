@@ -32,6 +32,7 @@
     "reloadDatabase": false,
     "location": false,
     "document": false,
-    "window": false
+    "window": false,
+    "sinon": false
   }
 }
