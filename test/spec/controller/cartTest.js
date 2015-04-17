@@ -121,5 +121,20 @@ describe('cart', function() {
       cartController.getAmount(reqMock, resMock);
     });
   });
+
+  describe('getInventory controller', function(){
+
+    it('should get inventory of specific cartItem', function(done){
+
+      reqMock.params = {id: '551cc20e47a654d14a280e9d'};
+      resMock.send = function(object){
+
+        expect(object.inventory).to.equal(100);
+        done();
+      };
+
+      cartController.getInventory(reqMock, resMock);
+    });
+  });
 });
 
