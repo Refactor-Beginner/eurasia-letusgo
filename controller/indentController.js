@@ -1,10 +1,12 @@
 'use strict';
 
+var constants = require('../util/formatUtil');
+
 var Indent = require('../model/indent');
 var Item = require('../model/item');
 var FormatUtil = require('../util/formatUtil.js');
 
-var NAME_LENGTH = 16;
+//var NAME_LENGTH = 16;
 
 function throwError(err) {
   if(err) {
@@ -60,7 +62,7 @@ var renderIndentPage = function(req, res) {
     getTotal(indent, 'cartItems.item', function(total) {
 
       indent.cartItems.forEach(function(cartItem) {
-        cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, NAME_LENGTH);
+        cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, constants.NAME_LENGTH);
       });
 
       var shortedCartItemName = getShortedCartItemName(indent.cartItems);
