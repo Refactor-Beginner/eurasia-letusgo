@@ -11,12 +11,12 @@ var parseString = function(name, length) {
     return name;
   }
 
-  for(var i = 0, j = 0; i < nameLength; i++) {
+  for(var index = 0, currentLength = 0; index < nameLength; index++) {
 
-    var char = name.charAt(i);
-    j += (/[\x00-\xff]/.test(char) ? 1 : 2);
+    var char = name.charAt(index);
+    currentLength += (/[\x00-\xff]/.test(char) ? 1 : 2);
 
-    if(j <= length) {
+    if(currentLength <= length) {
       result += char;
     } else {
       return result + '...';
