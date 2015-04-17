@@ -29,6 +29,7 @@ describe('cart', function() {
         expect(object).to.have.property('cartItems');
         expect(object).to.have.property('total');
         expect(object.total).to.equal(3334.50);
+        expect(object.cartItems[2].item.shortName).to.equal('2015欧美大牌春装...');
 
         done();
       };

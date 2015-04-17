@@ -3,11 +3,11 @@
 var _ = require('lodash');
 
 var FormatUtil = require('../util/formatUtil');
+var constants = require('../util/constants');
+
 var Cart = require('../model/cart');
 var Item = require('../model/item');
 var CartItem = require('../model/cartItem');
-
-var NAME_LENGTH = 16;
 
 function findCartById(cartId, done) {
 
@@ -32,7 +32,7 @@ var getCart = function(req, res) {
   findCartById(cartId, function(cart) {
 
     _.forEach(cart.cartItems, function(cartItem) {
-      cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, NAME_LENGTH);
+      cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, constants.NAME_LENGTH);
     });
 
     var total = cart.getTotal(cart.cartItems);
