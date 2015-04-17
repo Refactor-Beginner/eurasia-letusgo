@@ -21,8 +21,19 @@ describe('GET api/indent', function() {
     indentController.getIndent(reqMock, resMock);
   });
 
-  it('should render indent page', function() {
-    
+  it('should render indent page', function(done) {
+    resMock.render = function(view, object) {
+
+      expect(view).to.equal('indent');
+      expect(object).to.have.property('cartItems');
+      expect(object).to.have.property('indent');
+      expect(object.total).to.equal('3334.50');
+      expect(object.shortedCartItemName).to.equal('Nestle雀巢(三合一)速溶咖啡180ml 罐装');
+
+      done();
+    };
+
+    indentController.renderIndentPage(reqMock, resMock);
   });
 
   afterEach(function() {
