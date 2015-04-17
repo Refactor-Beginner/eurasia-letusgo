@@ -89,7 +89,23 @@ describe('cart', function() {
 
       cartController.changeCartItem(reqMock, resMock);
     });
+  });
 
+  describe('removeCartItem controller', function(){
+
+    it('should remove the cartItem from cart', function(done){
+
+      reqMock.params = {cartItemId: '551cc20e47a654d14a280e9b'};
+      resMock.send = function (object){
+
+        expect(object.cart.cartItems.length).to.equal(3);
+        expect(object.total).to.equal(3214.5);
+
+        done();
+      };
+
+      cartController.removeCartItem(reqMock, resMock);
+    });
   });
 });
 
