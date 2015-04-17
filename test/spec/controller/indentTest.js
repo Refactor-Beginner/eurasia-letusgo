@@ -21,6 +21,10 @@ describe('GET api/indent', function() {
     indentController.getIndent(reqMock, resMock);
   });
 
+  it('should render indent page', function() {
+    
+  });
+
   afterEach(function() {
 
     reloadDatabase();
