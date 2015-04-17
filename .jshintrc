@@ -35,6 +35,7 @@
     "location": false,
     "document": false,
     "window": false,
-    "sinon": false
+    "sinon": false,
+    "application": false
   }
 }
