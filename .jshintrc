@@ -18,8 +18,10 @@
   "unused": true,               //定义变量未使用会错
   "expr": true,                 //
   "maxparams": 4,
-  "maxdepth": 4,
-  "maxlen": 150,
+  "maxdepth": 4,                //最大嵌套深度
+  "maxlen": 150,                 //一行最大长度
+  "maxstatements": 150,          //一个文件最大有效代码行数
+  "loopfunc": true,
   "globals": {
     /* MOCHA */
     "describe": false,
