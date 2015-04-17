@@ -107,5 +107,19 @@ describe('cart', function() {
       cartController.removeCartItem(reqMock, resMock);
     });
   });
+
+  describe('getAmount controller', function(){
+
+    it('should get amout of cart', function(done){
+
+      resMock.send = function (object){
+
+        expect(object.amount).to.equal(31);
+        done();
+      };
+
+      cartController.getAmount(reqMock, resMock);
+    });
+  });
 });
 
