@@ -1,12 +1,10 @@
 'use strict';
 
-var constants = require('../util/formatUtil');
+var constants = require('../util/constants');
 
 var Indent = require('../model/indent');
 var Item = require('../model/item');
 var FormatUtil = require('../util/formatUtil.js');
-
-//var NAME_LENGTH = 16;
 
 function throwError(err) {
   if(err) {
