@@ -8,7 +8,7 @@
   "camelcase": true,            //使用一种命名风格
   "curly": true,                //总是要把花括号卸载循环和条件语句旁边
   "eqeqeq": true,               //强制使用===和!==
-  "immed": true,                //
+  "immed": false,                //
   "indent": 2,                  //一个tab两个空格
   "latedef": true,              //禁止变量未定义使用
   "newcap": true,               //构造器函数首字母大写
