@@ -41,6 +41,17 @@ describe('GET /', function() {
     itemController.getItemById(reqMock, resMock);
   });
 
+  it('should update item', function(done) {
+
+    reqMock.params = {id: '5523cea79294d58a8e06c3bf'};
+    reqMock.body = {inventory: 50};
+
+    resMock.send = function(status) {
+      expect(status).to.equal('inventory decrease successful');
+      done();
+    };
+    itemController.updateItem(reqMock, resMock);
+  });
 
 });
 
