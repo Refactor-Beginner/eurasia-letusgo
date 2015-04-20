@@ -26,47 +26,29 @@ mongoose.connect('mongodb://localhost/eurasiaLetusgo', function (err) {
     }
 });
 
-// development settings
-if (app.get('env') === 'development') {
-
-    app.set('port',3000);
-    app.use(express.static(path.join(__dirname, './public')));
-    app.use(express.static(path.join(__dirname, './.tmp')));
-    app.use(express.static(path.join(__dirname, './')));
-    app.use(express.static(path.join(__dirname, './jspm_packages')));
-
-
-  // development error handler
-    // will print stacktrace
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
+function appInit(port) {
+  app.set('port',port);
+  // changes it to use the optimized version for production
+  //app.use(express.static(path.join(__dirname, '/dist')));
+  app.use(express.static(path.join(__dirname, './public')));
+  app.use(express.static(path.join(__dirname, './.tmp')));
+  app.use(express.static(path.join(__dirname, './')));
+  app.use(express.static(path.join(__dirname, './jspm_packages')));
+  // production error handler
+  // no stacktraces leaked to user
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: err
     });
+  });
 }
 
-// production settings
 if (app.get('env') === 'production') {
-
-    app.set('port',80);
-    // changes it to use the optimized version for production
-    //app.use(express.static(path.join(__dirname, '/dist')));
-    app.use(express.static(path.join(__dirname, './public')));
-    app.use(express.static(path.join(__dirname, './.tmp')));
-    app.use(express.static(path.join(__dirname, './')));
-    app.use(express.static(path.join(__dirname, './jspm_packages')));
-    // production error handler
-    // no stacktraces leaked to user
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: {}
-        });
-    });
+  appInit(80);
 }
+appInit(3000);
 
 // routes
 var router = require('./router')(app);
