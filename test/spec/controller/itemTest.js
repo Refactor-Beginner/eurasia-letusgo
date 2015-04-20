@@ -6,6 +6,7 @@ describe('GET /', function() {
 
   var resMock = {};
   var reqMock = {};
+  var next;
 
   afterEach(function() {
     reloadDatabase();
@@ -23,7 +24,7 @@ describe('GET /', function() {
       done();
     };
 
-    itemController.renderItemDetail(reqMock, resMock);
+    itemController.renderItemDetail(reqMock, resMock, next);
   });
 
   it('it should get correct item by id', function(done) {

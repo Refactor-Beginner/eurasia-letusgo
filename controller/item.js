@@ -18,24 +18,29 @@ function getItemsByCartItemId(cartItems, callback) {
   });
 }
 
-var renderItemDetail = function(req, res) {
+var renderItemDetail = function(req, res, next){
   var id = req.params.id;
 
   Item.findById(id)
     .populate('category')
-    .exec(function(err, item) {
+    .exec()
+    .then(function(item){
 
-      Category.populate(item, 'category.parent', function() {
+      return Category.populate(item, 'category.parent');
+    })
+    .then(function(item) {
 
-        var itemDetails = {
-          item: item,
-          category: item.category
-        };
+      var itemDetails = {
+        item: item,
+        category: item.category
+      };
 
-        res.render('itemDetails', {
-          itemDetails: itemDetails
-        });
+      res.render('itemDetails', {
+        itemDetails: itemDetails
       });
+    })
+    .onReject(function(err){
+      next(err);
     });
 };
 
@@ -84,11 +89,7 @@ var updateItem = function(req, res) {
 
   var inventory = req.body.inventory;
 
-  Item.update({_id: id}, {
-    $set: {
-      inventory: inventory
-    }
-  }, function() {
+  Item.update({_id: id}, {$set: {inventory: inventory}}, function() {
     res.send('inventory decrease successful');
   });
 };
