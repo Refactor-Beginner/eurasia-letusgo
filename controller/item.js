@@ -2,6 +2,21 @@
 
 var Item = require('../model/item');
 var Category = require('../model/category');
+var CartItem = require('../model/cartItem');
+
+function getItemsByCartItemId(cartItems, callback) {
+
+  var itemIds = [];
+  cartItems.forEach(function(cartItem) {
+
+    var cartItemModel = new CartItem();
+    itemIds.push(cartItemModel.getItemId(cartItem));
+  });
+
+  Item.where('_id').in(itemIds).exec(function(err, items) {
+    callback(items);
+  });
+}
 
 var renderItemDetail = function(req, res) {
   var id = req.params.id;
