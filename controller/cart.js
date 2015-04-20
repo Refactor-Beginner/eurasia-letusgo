@@ -9,64 +9,66 @@ var Cart = require('../model/cart');
 var Item = require('../model/item');
 var CartItem = require('../model/cartItem');
 
-function findCartById(cartId, done) {
+function findCartById(cartId) {
 
-  Cart.findById(cartId)
+  return Cart.findById(cartId)
     .populate('cartItems')
-    .exec(function(err, cart) {
-
-      Item.populate(cart, 'cartItems.item', function(err) {
-
-        if(err) {
-          throw err;
-        }
-
-        done(cart);
-      });
+    .exec()
+    .then(function(cart){
+      return Item.populate(cart, 'cartItems.item');
     });
 }
 
-var getCart = function(req, res) {
+var getCart = function(req, res, next){
+
   var cartId = '551cc282a6b79c584b59bc0f';
 
-  findCartById(cartId, function(cart) {
+    findCartById(cartId)
+    .then(function(cart){
+      _.forEach(cart.cartItems, function(cartItem) {
+        cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, constants.NAME_LENGTH);
+      });
 
-    _.forEach(cart.cartItems, function(cartItem) {
-      cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, constants.NAME_LENGTH);
+      var total = cart.getTotal(cart.cartItems);
+      res.render('cart', {cartItems: cart.cartItems, total: total});
+    })
+    .onReject(function(err){
+      next(err);
     });
-
-    var total = cart.getTotal(cart.cartItems);
-    res.render('cart', {cartItems: cart.cartItems, total: total});
-  });
 };
 
-var addToCart = function(req, res) {
+var addToCart = function(req, res, next){
+
   var cartId = '551cc282a6b79c584b59bc0f';
   var number = parseInt(req.body.number);
   var id = req.params.id;
 
-  findCartById(cartId, function(cart) {
+  findCartById(cartId)
+    .then(function(cart){
 
-    var result = _.find(cart.cartItems, function(cartItem) {
-      return cartItem.item._id.toString() === id;
-    });
-
-    if(result){
-
-      number += result.number;
-      CartItem.update({item: id}, {$set: {number: number}}, function(){
-        res.send('修改数量成功！');
+      var result = _.find(cart.cartItems, function(cartItem) {
+        return cartItem.item._id.toString() === id;
       });
-    }else{
 
-      CartItem.create({item:id, number: number}, function(err, cartItem){
-        cart.cartItems.push(cartItem._id);
-        cart.save(function(){
-          res.send('成功添加新商品到购物车！');
+      if(result){
+
+        number += result.number;
+        CartItem.update({item: id}, {$set: {number: number}}, function(){
+          res.send('修改数量成功！');
         });
-      });
-    }
-  });
+      }else{
+
+        CartItem.create({item:id, number: number}, function(err, cartItem){
+          cart.cartItems.push(cartItem._id);
+          cart.save(function(){
+            res.send('成功添加新商品到购物车！');
+          });
+        });
+      }
+    })
+    .onReject(function(err){
+      next(err);
+    });
 };
 
 var changeCartItem = function(req, res) {
@@ -75,19 +77,22 @@ var changeCartItem = function(req, res) {
   var price = req.body.price;
   var total = req.body.total;
 
-  CartItem.findById(cartItemId, function(err, cartItem) {
+  CartItem.findById(cartItemId)
+    .exec()
+    .then(function(cartItem){
 
-    var current = cartItem.number * price;
-    CartItem.update({_id: cartItemId}, {$set: {number: number}}, function() {
+      CartItem.update({_id: cartItemId}, {$set: {number: number}}).exec();
+      return cartItem.number * price;
+    })
+    .then(function(currentTotal){
 
       var subtotal = price * number;
-      total = total - current + subtotal;
+      total = total - currentTotal + subtotal;
 
       res.send({subtotal: subtotal.toFixed(2), total: total.toFixed(2)});
-
     });
-  });
 };
+
 
 var removeCartItem = function(req, res) {
   var cartItemId = req.params.cartItemId;
@@ -116,6 +121,23 @@ var removeCartItem = function(req, res) {
       });
     });
   });
+
+  //Cart.findById(cartId)
+  //  .exec()
+  //  .then(function(cart){
+  //
+  //    return _.remove(cart.cartItems, function(cartItem) {
+  //      return cartItem.toString() !== cartItemId;
+  //    });
+  //  })
+  //  .then(CartItem.remove({_id: cartItemId}))
+  //  .then(Cart.save)
+  //  .then(function(){
+  //    return CartItem.find().populate('item').exec();
+  //  })
+  //  .then(function(cartItems){
+  //    res.send({cart: cart, total: cart.getTotal(cartItems)});
+  //  });
 };
 
 var getAmount = function(req, res) {

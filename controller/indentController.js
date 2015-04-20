@@ -67,6 +67,23 @@ var renderIndentPage = function(req, res, next) {
   });
 };
 
+//var getIndent = function(req, res, next){
+//
+//  Indent.findById('551fd16975cd55ed0cfa5503')
+//    .populate('cartItems')
+//    .exec()
+//    .then(function(indent){
+//      console.log(indent+ '-------');
+//      return Item.populate(indent, 'cartItems.item');
+//    })
+//    .then(function(indent){
+//      var total = indent.getTotal(indent.cartItems);
+//      res.send({indent: indent, total: total});
+//    })
+//    .onReject(function(err) {
+//      next(err);
+//    });
+//};
 
 //var renderIndentPage = function(req, res){
 //
