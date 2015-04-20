@@ -54,9 +54,9 @@ function renderIndexPage(renderObject) {
   });
 }
 
-function initCategories(initItemsObject, renderObject) {
+function initCategories(paramObject) {
 
-  initItems(initItemsObject.query, initItemsObject.start, initItemsObject.pageSize, function(items, pageCount) {
+  initItems(paramObject.query, paramObject.start, paramObject.pageSize, function(items, pageCount) {
 
     Category.find()
       .populate('parent')
@@ -71,34 +71,40 @@ function initCategories(initItemsObject, renderObject) {
 
         renderIndexPage(
           {
-            res: renderObject.res,
+            res: paramObject.res,
             mainCategories: mainCategories,
-            currentCategory: renderObject.currentCategory,
+            currentCategory: paramObject.currentCategory,
             items: items,
             pageCount: pageCount,
-            pageNumber: renderObject.pageNumber,
-            isCategory: renderObject.isCategory
+            pageNumber: paramObject.pageNumber,
+            isCategory: paramObject.isCategory
           });
       });
   });
 }
 
-var getIndexInfo = function(req, res) {
-  var currentCategory = {isDisplay: false, name: '', parent: {name: ''}};
+function  initCategoriesByObject (object){
 
-  var initItemsObject = {
+  var defaultObject = {
     query: {isRecommend: true},
     start: 0,
-    pageSize: constants.PAGE_SIZE
-  };
-
-  var renderObject = {
-    res: res,
-    currentCategory: currentCategory,
     pageNumber: 1,
     isCategory: false
   };
-  initCategories(initItemsObject, renderObject);
+
+  var params = _.assign(defaultObject, object);
+
+  initCategories(params);
+}
+var getIndexInfo = function(req, res) {
+  var currentCategory = {isDisplay: false, name: '', parent: {name: ''}};
+
+  var object = {
+    pageSize: constants.PAGE_SIZE,
+    res: res,
+    currentCategory: currentCategory
+  };
+  initCategoriesByObject(object);
 };
 
 var getRecommendItemsByPageNumber = function(req, res) {
@@ -107,18 +113,14 @@ var getRecommendItemsByPageNumber = function(req, res) {
   var start = (pageNumber - 1) * constants.PAGE_SIZE;
   var currentCategory = {isDisplay: false, name: '', parent: {name: ''}};
 
-  var initItemsObject = {
-    query: {isRecommend: true},
+  var object = {
+    pageSize:  constants.PAGE_SIZE,
     start: start,
-    pageSize: constants.PAGE_SIZE
-  };
-  var renderObject = {
     res: res,
-    currentCategory: currentCategory,
     pageNumber: pageNumber,
-    isCategory: false
+    currentCategory: currentCategory
   };
-  initCategories(initItemsObject, renderObject);
+  initCategoriesByObject(object);
 };
 
 var getItemsByCategoryId = function(req, res) {
@@ -133,18 +135,15 @@ var getItemsByCategoryId = function(req, res) {
       currentCategory = category;
       currentCategory.isDisplay = true;
 
-      var initItemsObject = {
+      var paramObject = {
         query: {category: id},
-        start: 0,
-        pageSize: constants.PAGE_SIZE
-      };
-      var renderObject = {
+        pageSize: constants.PAGE_SIZE,
         res: res,
         currentCategory: currentCategory,
-        pageNumber: 1,
         isCategory: true
       };
-      initCategories(initItemsObject, renderObject);
+
+      initCategoriesByObject(paramObject);
     });
 };
 
@@ -163,18 +162,16 @@ var getItemsByCategoryIdAndPageNumber = function(req, res) {
       currentCategory = category;
       currentCategory.isDisplay = true;
 
-      var initItemsObject = {
+      var paramObject = {
         query: {category: id},
         start: start,
-        pageSize: constants.PAGE_SIZE
-      };
-      var renderObject = {
-        res: res,
+        pageSize: constants.PAGE_SIZE,
         currentCategory: currentCategory,
         pageNumber: pageNumber,
-        isCategory: true
+        isCategory: true,
+        res: res
       };
-      initCategories(initItemsObject, renderObject);
+      initCategoriesByObject(paramObject);
     });
 };
 
