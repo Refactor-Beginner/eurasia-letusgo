@@ -36,13 +36,6 @@ function appInit(port) {
   app.use(express.static(path.join(__dirname, './jspm_packages')));
   // production error handler
   // no stacktraces leaked to user
-  app.use(function (err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
 }
 
 if (app.get('env') === 'production') {
@@ -51,7 +44,25 @@ if (app.get('env') === 'production') {
 appInit(3000);
 
 // routes
-var router = require('./router')(app);
+var router = require('./router');
+router(app);
+
+app.get('*', function(req, res, next){
+
+  var err =  new Error('bad request');
+  err.status = 404;
+  next(err);
+
+});
+
+app.use(function (err, req, res, next) {
+  res.status(err.status || 500);
+  res.render('error', {
+    message: err.message,
+    error: err
+  });
+  next();
+});
 
 module.exports = app;
 
