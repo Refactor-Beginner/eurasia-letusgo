@@ -6,27 +6,19 @@ var Indent = require('../model/indent');
 var Item = require('../model/item');
 var FormatUtil = require('../util/formatUtil.js');
 
-function throwError(err) {
-  if(err) {
-    throw err;
-  }
-}
-
 function getTotal(indent, query, done) {
   Item.populate(indent, query, function(err) {
-
-    throwError(err);
-    done(indent.getTotal(indent.cartItems));
+    done(err, indent.getTotal(indent.cartItems));
   });
 }
 
 function getIndentById(done) {
   Indent.findById('551fd16975cd55ed0cfa5503')
+
     .populate('cartItems')
     .exec(function(err, indent) {
 
-      throwError(err);
-      done(indent);
+      done(err, indent);
     });
 }
 
@@ -43,26 +35,26 @@ function getShortedCartItemName(cartItems) {
   return shortedCartItemName.substring(0, shortedCartItemName.length - 1);
 }
 
-var getIndent = function(req, res) {
+var getIndent = function(req, res, next) {
 
-  getIndentById(function(indent) {
-
-    getTotal(indent, 'cartItems.item', function(total) {
+  getIndentById(function(err, indent) {
+    getTotal(indent, 'cartItems.item', function(err, total) {
+      err && next(err);
       res.send({indent: indent, total: total});
     });
   });
 };
 
-var renderIndentPage = function(req, res) {
+var renderIndentPage = function(req, res, next) {
 
-  getIndentById(function(indent) {
+  getIndentById(function(err, indent) {
 
-    getTotal(indent, 'cartItems.item', function(total) {
+    getTotal(indent, 'cartItems.item', function(err, total) {
+      err && next(err);
 
       indent.cartItems.forEach(function(cartItem) {
         cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, constants.NAME_LENGTH);
       });
-
       var shortedCartItemName = getShortedCartItemName(indent.cartItems);
 
       res.render('indent', {
@@ -74,6 +66,42 @@ var renderIndentPage = function(req, res) {
     });
   });
 };
+
+
+//var renderIndentPage = function(req, res){
+//
+//  //var promise = new Promise();
+//  //promise.then(function(){
+//  //  return  Indent.findById('551fd16975cd55ed0cfa5503')
+//  //    .populate('cartItems')
+//  //    .exec();
+//  //})
+//  Indent.find('551fd16975cd55ed0cfa5503')
+//    .then(function(){
+//      return  Indent.findById('551fd16975cd55ed0cfa5503')
+//          .populate('cartItems')
+//          .exec();
+//    })
+//    .then(function(indent){
+//      Item.populate(indent, 'cartItems.item').exec();
+//    })
+//    .then(function(indent){
+//      var total = indent.getTotal(indent.cartItems);
+//
+//      indent.cartItems.forEach(function(cartItem) {
+//        cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, constants.NAME_LENGTH);
+//      });
+//
+//      var shortedCartItemName = getShortedCartItemName(indent.cartItems);
+//
+//      res.render('indent', {
+//        cartItems: indent.cartItems,
+//        total: total,
+//        indent: indent,
+//        shortedCartItemName: shortedCartItemName
+//      });
+//    });
+//};
 
 module.exports = {
   getIndent: getIndent,
