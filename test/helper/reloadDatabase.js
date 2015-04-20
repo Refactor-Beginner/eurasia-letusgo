@@ -13,27 +13,11 @@ var categories = require('../../seed/test/categories');
 var carts = require('../../seed/test/carts');
 
 var reloadDatabase = function() {
-  Item.remove({});
-  CartItem.remove({}, function(err, cartItem) {
-    if(err) {
-      console.log(err);
-    }
-  });
-  Cart.remove({}, function(err, carts) {
-    if(err) {
-      console.log(err);
-    }
-  });
-  Category.remove({}, function(err, categories) {
-    if(err) {
-      console.log(err);
-    }
-  });
-  Indent.remove({}, function(err, indents) {
-    if(err) {
-      console.log(err);
-    }
-  });
+  CartItem.remove({}).exec()
+    .then(Cart.remove({}).exec())
+    .then(Category.remove({}).exec())
+    .then(Indent.remove({}).exec())
+    .then(Item.remove({}).exec());
 
   Item.create(items);
   CartItem.create(cartItems);
