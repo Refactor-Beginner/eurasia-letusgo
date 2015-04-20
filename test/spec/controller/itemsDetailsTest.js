@@ -19,7 +19,7 @@ describe('GET /', function() {
       done();
     };
 
-    itemController.getItem(reqMock, resMock);
+    itemController.renderItemDetail(reqMock, resMock);
 
     afterEach(function() {
 
