@@ -29,7 +29,6 @@ var renderItemDetail = function(req, res, next){
     });
 };
 
-
 var getItemById = function(req, res) {
 
   var id = req.params.id;
