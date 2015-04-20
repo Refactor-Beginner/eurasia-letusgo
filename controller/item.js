@@ -27,4 +27,6 @@ var getItem = function(req, res) {
     });
 };
 
-module.exports = getItem;
+module.exports = {
+  getItem: getItem
+};
