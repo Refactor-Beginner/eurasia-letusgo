@@ -16,7 +16,7 @@ function getIndentById() {
             });
 }
 
-function getShortedCartItemName(cartItems) {
+function getShortedCartItems(cartItems) {
 
   var shortedCartItemName = '';
 
@@ -45,17 +45,19 @@ var renderIndentPage = function(req, res, next){
 
   getIndentById()
     .then(function(indent){
+
       var total = indent.getTotal(indent.cartItems);
+      var shortedCartItems = getShortedCartItems(indent.cartItems);
+
       indent.cartItems.forEach(function(cartItem) {
         cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, constants.NAME_LENGTH);
       });
-      var shortedCartItemName = getShortedCartItemName(indent.cartItems);
 
       res.render('indent', {
         cartItems: indent.cartItems,
         total: total,
         indent: indent,
-        shortedCartItemName: shortedCartItemName
+        shortedCartItemName: shortedCartItems
       });
     })
     .onReject(function(err){
