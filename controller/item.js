@@ -10,11 +10,7 @@ var renderItemDetail = function(req, res) {
     .populate('category')
     .exec(function(err, item) {
 
-      Category.populate(item, 'category.parent', function(err) {
-
-        if(err) {
-          throw err;
-        }
+      Category.populate(item, 'category.parent', function() {
 
         var itemDetails = {
           item: item,
