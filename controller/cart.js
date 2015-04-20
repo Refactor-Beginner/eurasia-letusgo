@@ -71,7 +71,7 @@ var addToCart = function(req, res, next){
     });
 };
 
-var changeCartItem = function(req, res) {
+var changeCartItem = function(req, res, next) {
   var cartItemId = req.params.id;
   var number = req.body.number;
   var price = req.body.price;
@@ -90,6 +90,9 @@ var changeCartItem = function(req, res) {
       total = total - currentTotal + subtotal;
 
       res.send({subtotal: subtotal.toFixed(2), total: total.toFixed(2)});
+    })
+    .onReject(function(err){
+      next(err);
     });
 };
 
@@ -154,21 +157,20 @@ var getAmount = function(req, res) {
     });
 };
 
-var getInventory = function(req, res) {
+var getInventory = function(req, res, next) {
   var id = req.params.id;
 
-  CartItem.findById(id, function(err, cartItem) {
-    if(err) {
-      throw err;
-    }
-
-    Item.findById(cartItem.item, function(err, item) {
-      if(err) {
-        throw err;
-      }
+  CartItem.findById(id)
+    .exec()
+    .then(function(cartItem){
+      return Item.findById(cartItem.item).exec();
+    })
+    .then(function(item){
       res.send({inventory: item.inventory});
+    })
+    .onReject(function(err){
+      next(err);
     });
-  });
 };
 
 module.exports = {
