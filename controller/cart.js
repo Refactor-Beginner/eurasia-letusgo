@@ -59,9 +59,11 @@ var addToCart = function(req, res) {
       });
     }else{
 
-      CartItem.update({item: id}, {$set: {number: number}}, {upsert: true}, function(err, cartItem){
-        cart.cartItems.push(cartItem.upserted[0]._id);
-        res.send('成功添加新商品到购物车！');
+      CartItem.create({item:id, number: number}, function(err, cartItem){
+        cart.cartItems.push(cartItem._id);
+        cart.save(function(){
+          res.send('成功添加新商品到购物车！');
+        });
       });
     }
   });
