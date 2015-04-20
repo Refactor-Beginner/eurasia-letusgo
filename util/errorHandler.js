@@ -1,7 +1,7 @@
 'use strict';
 
-var errorHandler = function (status, msg){
-  var err = new Error(msg);
+var errorHandler = function (status, massage){
+  var err = new Error(massage);
   err.status = status;
   return err;
 };
