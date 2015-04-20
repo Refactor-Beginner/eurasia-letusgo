@@ -45,11 +45,7 @@ var updateItem = function(req, res) {
 
   var inventory = req.body.inventory;
 
-  Item.update({_id: id}, {
-    $set: {
-      inventory: inventory
-    }
-  }, function() {
+  Item.update({_id: id}, {$set: {inventory: inventory}}, function() {
     res.send('inventory decrease successful');
   });
 };
