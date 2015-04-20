@@ -2,7 +2,7 @@
 var Item = require('../model/item');
 var Category = require('../model/category');
 
-var getItem = function(req, res) {
+var renderItemDetail = function(req, res) {
   var id = req.params.id;
 
   Item.findById(id)
@@ -28,5 +28,5 @@ var getItem = function(req, res) {
 };
 
 module.exports = {
-  getItem: getItem
+  renderItemDetail: renderItemDetail
 };
