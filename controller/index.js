@@ -6,9 +6,7 @@ var Category = require('../model/category');
 var Item = require('../model/item');
 
 var FormatUtil = require('../util/formatUtil');
-
-var PAGE_SIZE = 8;
-var NAME_LENGTH = 16;
+var constants = require('../util/constants');
 
 function initItems(query, start, pageSize, callback) {
 
@@ -16,7 +14,7 @@ function initItems(query, start, pageSize, callback) {
 
     items.forEach(function(item) {
 
-      item.shortName = FormatUtil.parseString(item.name, NAME_LENGTH);
+      item.shortName = FormatUtil.parseString(item.name, constants.NAME_LENGTH);
     });
 
     var newItems = _.take(_.drop(items, start), pageSize);
@@ -91,7 +89,7 @@ var getIndexInfo = function(req, res) {
   var initItemsObject = {
     query: {isRecommend: true},
     start: 0,
-    pageSize: PAGE_SIZE
+    pageSize: constants.PAGE_SIZE
   };
 
   var renderObject = {
@@ -106,13 +104,13 @@ var getIndexInfo = function(req, res) {
 var getRecommendItemsByPageNumber = function(req, res) {
 
   var pageNumber = req.params.pageNumber;
-  var start = (pageNumber - 1) * PAGE_SIZE;
+  var start = (pageNumber - 1) * constants.PAGE_SIZE;
   var currentCategory = {isDisplay: false, name: '', parent: {name: ''}};
 
   var initItemsObject = {
     query: {isRecommend: true},
     start: start,
-    pageSize: PAGE_SIZE
+    pageSize: constants.PAGE_SIZE
   };
   var renderObject = {
     res: res,
@@ -138,7 +136,7 @@ var getItemsByCategoryId = function(req, res) {
       var initItemsObject = {
         query: {category: id},
         start: 0,
-        pageSize: PAGE_SIZE
+        pageSize: constants.PAGE_SIZE
       };
       var renderObject = {
         res: res,
@@ -155,7 +153,7 @@ var getItemsByCategoryIdAndPageNumber = function(req, res) {
   var id = req.params.id;
 
   var pageNumber = req.params.pageNumber;
-  var start = (pageNumber - 1) * PAGE_SIZE;
+  var start = (pageNumber - 1) * constants.PAGE_SIZE;
 
   var currentCategory;
   Category.findById(id)
@@ -168,7 +166,7 @@ var getItemsByCategoryIdAndPageNumber = function(req, res) {
       var initItemsObject = {
         query: {category: id},
         start: start,
-        pageSize: PAGE_SIZE
+        pageSize: constants.PAGE_SIZE
       };
       var renderObject = {
         res: res,
