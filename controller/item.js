@@ -50,7 +50,6 @@ var updateItem = function(req, res) {
 
 module.exports = {
   renderItemDetail: renderItemDetail,
-  //getItems: getItems,
   getItemById: getItemById,
   updateItem: updateItem
 };
