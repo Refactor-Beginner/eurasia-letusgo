@@ -42,35 +42,35 @@ var renderItemDetail = function(req, res) {
     });
 };
 
-//var getItems = function(req, res) {
-//
-//  var cartItems = req.query.cartItems;
-//
-//  if(cartItems) {
-//
-//    getItemsByCartItemId(cartItems, function(items) {
-//      res.send(items);
-//    });
-//  } else {
-//
-//    Category.findById('551aa95e2ef086a169628b74')
-//      .populate('parent')
-//      .exec(function(err, category) {
-//
-//        Item.findById('551aac132ef086a169628b75')
-//          .populate('category')
-//          .exec(function(err, item) {
-//
-//            var test = {
-//              item: item,
-//              category: category
-//            };
-//
-//            res.send(test);
-//          });
-//      });
-//  }
-//};
+var getItems = function(req, res) {
+
+  var cartItems = req.query.cartItems;
+
+  if(cartItems) {
+
+    getItemsByCartItemId(cartItems, function(items) {
+      res.send(items);
+    });
+  } else {
+
+    Category.findById('551aa95e2ef086a169628b74')
+      .populate('parent')
+      .exec(function(err, category) {
+
+        Item.findById('551aac132ef086a169628b75')
+          .populate('category')
+          .exec(function(err, item) {
+
+            var test = {
+              item: item,
+              category: category
+            };
+
+            res.send(test);
+          });
+      });
+  }
+};
 
 var getItemById = function(req, res) {
 
@@ -98,7 +98,7 @@ var updateItem = function(req, res) {
 
 module.exports = {
   renderItemDetail: renderItemDetail,
-  //getItems: getItems,
+  getItems: getItems,
   getItemById: getItemById,
   updateItem: updateItem
 };
