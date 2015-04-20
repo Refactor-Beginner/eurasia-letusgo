@@ -23,8 +23,8 @@ var ItemSchema = new Schema({
   isRecommend: Boolean
 });
 
-ItemSchema.methods.getId = function(item) {
-  return item._id;
+ItemSchema.methods.getId = function() {
+  return this._id;
 };
 
 module.exports = mongoose.model('Item', ItemSchema);
