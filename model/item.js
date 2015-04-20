@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 
-function setPrice(num) {
+function formatPrice(num) {
   return num.toFixed(2);
 }
 
@@ -18,7 +18,7 @@ var ItemSchema = new Schema({
     ref: 'Category'
   },
   specification: String,
-  price: {type: Number, get: setPrice},
+  price: {type: Number, get: formatPrice},
   inventory: Number,
   isRecommend: Boolean
 });
