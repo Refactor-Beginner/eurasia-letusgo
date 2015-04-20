@@ -3,6 +3,8 @@
 var express = require('express');
 var router = express.Router();
 
+var itemController = require('../../controller/item.js');
+
 var Item = require('../../model/item');
 var CartItem = require('../../model/cartItem');
 var Category = require('../../model/category');
