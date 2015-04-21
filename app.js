@@ -52,25 +52,23 @@ app.get('*', function(req, res, next){
   var err =  new Error('bad request');
   err.status = 404;
   next(err);
-
 });
 
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);
 
-  if(req.accepts()){
-    console.log('hello');
+  if(req.header('x-requested-with')){
 
-    res.send({
-      status: err.status || 500,
-      massage: err.message
-    });
-  }
-
-  res.render('error', {
+    res.render('error', {
       message: err.message,
       error: err
     });
+  }
+
+  res.send({
+    status: err.status || 500,
+    massage: err.message
+  });
   next();
 });
 
