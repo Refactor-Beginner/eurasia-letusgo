@@ -25,19 +25,12 @@ var renderItemDetail = function(req, res, next){
     .populate('category')
     .exec()
     .then(function(item){
-
       return Category.populate(item, 'category.parent');
     })
     .then(function(item) {
 
-      var itemDetails = {
-        item: item,
-        category: item.category
-      };
-
-      res.render('itemDetails', {
-        itemDetails: itemDetails
-      });
+      var itemDetails = {item: item, category: item.category};
+      res.render('itemDetails', {itemDetails: itemDetails});
     })
     .onReject(function(err){
       next(err);
@@ -48,30 +41,9 @@ var getItems = function(req, res) {
 
   var cartItems = req.query.cartItems;
 
-  if(cartItems) {
-
-    getItemsByCartItemId(cartItems, function(items) {
-      res.send(items);
-    });
-  } else {
-
-    Category.findById('551aa95e2ef086a169628b74')
-      .populate('parent')
-      .exec(function(err, category) {
-
-        Item.findById('551aac132ef086a169628b75')
-          .populate('category')
-          .exec(function(err, item) {
-
-            var test = {
-              item: item,
-              category: category
-            };
-
-            res.send(test);
-          });
-      });
-  }
+  getItemsByCartItemId(cartItems, function(items) {
+    res.send(items);
+  });
 };
 
 var getItemById = function(req, res) {
