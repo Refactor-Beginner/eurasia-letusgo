@@ -37,11 +37,16 @@ function createNewCartItem(res, id, number, cart){
   CartItem.create({item:id, number: number}, function(err, cartItem){
     cart.cartItems.push(cartItem._id);
     cart.save(function(){
-      res.send({
-        status: 200,
-        data: '成功添加新商品到购物车！'
-      });
+      res.send({status: 200, data: '成功添加新商品到购物车！'});
     });
+  });
+}
+
+function modifyExistedCartItem (res, result, number, id){
+
+  number += result.number;
+  CartItem.update({item: id}, {$set: {number: number}}, function(){
+    res.send({status: 200, data: '修改数量成功！'});
   });
 }
 
@@ -77,14 +82,7 @@ var addToCart = function(req, res, next){
       });
 
       if(result){
-
-        number += result.number;
-        CartItem.update({item: id}, {$set: {number: number}}, function(){
-          res.send({
-            status: 200,
-            data: '修改数量成功！'
-          });
-        });
+        modifyExistedCartItem (res, result, number, id);
       }else{
         createNewCartItem(res, id, number, cart);
       }
