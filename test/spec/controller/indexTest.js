@@ -6,6 +6,7 @@ describe('index', function() {
 
   var reqMock = {};
   var resMock = {};
+  var next = function(){};
 
   afterEach(function() {
 
@@ -18,15 +19,8 @@ describe('index', function() {
 
       resMock.render = function(view, object) {
 
-        expect(view).to.equal('index');
-        expect(object).to.have.property('mainCategories');
-        expect(object).to.have.property('currentCategory');
-        expect(object).to.have.property('items');
-        expect(object).to.have.property('pageCount');
-        expect(object).to.have.property('currentPage');
-        expect(object).to.have.property('isCategory');
-
         expect(object.mainCategories.length).to.equal(10);
+        expect(object.currentCategory.isDisplay).to.equal(false);
         expect(object.items.length).to.equal(8);
         expect(object.pageCount).to.equal(2);
         expect(object.currentPage).to.equal(1);
@@ -35,7 +29,7 @@ describe('index', function() {
         done();
       };
 
-      indexController.getIndexInfo(reqMock, resMock);
+      indexController.getIndexInfo(reqMock, resMock, next);
     });
   });
 
@@ -50,15 +44,8 @@ describe('index', function() {
 
       resMock.render = function(view, object) {
 
-        expect(view).to.equal('index');
-        expect(object).to.have.property('mainCategories');
-        expect(object).to.have.property('currentCategory');
-        expect(object).to.have.property('items');
-        expect(object).to.have.property('pageCount');
-        expect(object).to.have.property('currentPage');
-        expect(object).to.have.property('isCategory');
-
         expect(object.mainCategories.length).to.equal(10);
+        expect(object.currentCategory.isDisplay).to.equal(false);
         expect(object.items.length).to.equal(3);
         expect(object.pageCount).to.equal(2);
         expect(object.currentPage).to.equal(2);
@@ -67,7 +54,7 @@ describe('index', function() {
         done();
       };
 
-      indexController.getRecommendItemsByPageNumber(reqMock, resMock);
+      indexController.getRecommendItemsByPageNumber(reqMock, resMock, next);
     });
   });
 
@@ -82,15 +69,8 @@ describe('index', function() {
 
       resMock.render = function(view, object) {
 
-        expect(view).to.equal('index');
-        expect(object).to.have.property('mainCategories');
-        expect(object).to.have.property('currentCategory');
-        expect(object).to.have.property('items');
-        expect(object).to.have.property('pageCount');
-        expect(object).to.have.property('currentPage');
-        expect(object).to.have.property('isCategory');
-
         expect(object.mainCategories.length).to.equal(10);
+        expect(object.currentCategory.isDisplay).to.equal(true);
         expect(object.items.length).to.equal(4);
         expect(object.pageCount).to.equal(1);
         expect(object.currentPage).to.equal(1);
@@ -99,7 +79,7 @@ describe('index', function() {
         done();
       };
 
-      indexController.getItemsByCategoryId(reqMock, resMock);
+      indexController.getItemsByCategoryId(reqMock, resMock, next);
 
     });
   });
@@ -116,15 +96,8 @@ describe('index', function() {
 
       resMock.render = function(view, object) {
 
-        expect(view).to.equal('index');
-        expect(object).to.have.property('mainCategories');
-        expect(object).to.have.property('currentCategory');
-        expect(object).to.have.property('items');
-        expect(object).to.have.property('pageCount');
-        expect(object).to.have.property('currentPage');
-        expect(object).to.have.property('isCategory');
-
         expect(object.mainCategories.length).to.equal(10);
+        expect(object.currentCategory.isDisplay).to.equal(true);
         expect(object.items.length).to.equal(0);
         expect(object.pageCount).to.equal(1);
         expect(object.currentPage).to.equal(2);
@@ -133,7 +106,7 @@ describe('index', function() {
         done();
       };
 
-      indexController.getItemsByCategoryIdAndPageNumber(reqMock, resMock);
+      indexController.getItemsByCategoryIdAndPageNumber(reqMock, resMock, next);
 
     });
   });

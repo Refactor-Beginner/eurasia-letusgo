@@ -8,22 +8,6 @@ var Item = require('../model/item');
 var FormatUtil = require('../util/formatUtil');
 var constants = require('../util/constants');
 
-function initItems(query, start, pageSize, callback) {
-
-  Item.find(query).exec(function(err, items) {
-
-    items.forEach(function(item) {
-
-      item.shortName = FormatUtil.parseString(item.name, constants.NAME_LENGTH);
-    });
-
-    var newItems = _.take(_.drop(items, start), pageSize);
-    var pageCount = Math.ceil(items.length / pageSize);
-
-    callback(newItems, pageCount);
-  });
-}
-
 function getSubCategories(categories, mainCategories) {
 
   _.forEach(categories, function(category) {
@@ -56,31 +40,46 @@ function renderIndexPage(renderObject) {
 
 function initCategories(paramObject) {
 
-  initItems(paramObject.query, paramObject.start, paramObject.pageSize, function(items, pageCount) {
+  var currentItems;
+  var pageCount;
 
-    Category.find()
-      .populate('parent')
-      .exec(function(err, categories) {
+  Item.find(paramObject.query)
+    .exec()
+    .then(function(items){
 
-        var mainCategories = _.filter(categories, function(category) {
+      items.forEach(function(item) {
 
-          category.subCategories = [];
-          return category.parent === null;
-        });
-        mainCategories = getSubCategories(categories, mainCategories);
-
-        renderIndexPage(
-          {
-            res: paramObject.res,
-            mainCategories: mainCategories,
-            currentCategory: paramObject.currentCategory,
-            items: items,
-            pageCount: pageCount,
-            pageNumber: paramObject.pageNumber,
-            isCategory: paramObject.isCategory
-          });
+        item.shortName = FormatUtil.parseString(item.name, constants.NAME_LENGTH);
       });
-  });
+
+      currentItems = _.take(_.drop(items, paramObject.start), paramObject.pageSize);
+      pageCount = Math.ceil(items.length / paramObject.pageSize);
+
+      return Category.find().populate('parent').exec();
+    })
+    .then(function(categories){
+
+      var mainCategories = _.filter(categories, function(category) {
+
+        category.subCategories = [];
+        return category.parent === null;
+      });
+      mainCategories = getSubCategories(categories, mainCategories);
+
+      renderIndexPage(
+        {
+          res: paramObject.res,
+          mainCategories: mainCategories,
+          currentCategory: paramObject.currentCategory,
+          items: currentItems,
+          pageCount: pageCount,
+          pageNumber: paramObject.pageNumber,
+          isCategory: paramObject.isCategory
+        });
+    })
+    .onReject(function(err){
+      paramObject.next(err);
+    });
 }
 
 function  initCategoriesByObject (object){
@@ -96,18 +95,19 @@ function  initCategoriesByObject (object){
 
   initCategories(params);
 }
-var getIndexInfo = function(req, res) {
+var getIndexInfo = function(req, res, next) {
   var currentCategory = {isDisplay: false, name: '', parent: {name: ''}};
 
   var object = {
     pageSize: constants.PAGE_SIZE,
     res: res,
+    next: next,
     currentCategory: currentCategory
   };
   initCategoriesByObject(object);
 };
 
-var getRecommendItemsByPageNumber = function(req, res) {
+var getRecommendItemsByPageNumber = function(req, res, next) {
 
   var pageNumber = req.params.pageNumber;
   var start = (pageNumber - 1) * constants.PAGE_SIZE;
@@ -117,13 +117,14 @@ var getRecommendItemsByPageNumber = function(req, res) {
     pageSize:  constants.PAGE_SIZE,
     start: start,
     res: res,
+    next: next,
     pageNumber: pageNumber,
     currentCategory: currentCategory
   };
   initCategoriesByObject(object);
 };
 
-var getItemsByCategoryId = function(req, res) {
+var getItemsByCategoryId = function(req, res, next) {
 
   var id = req.params.id;
   var currentCategory;
@@ -139,6 +140,7 @@ var getItemsByCategoryId = function(req, res) {
         query: {category: id},
         pageSize: constants.PAGE_SIZE,
         res: res,
+        next: next,
         currentCategory: currentCategory,
         isCategory: true
       };
@@ -147,7 +149,7 @@ var getItemsByCategoryId = function(req, res) {
     });
 };
 
-var getItemsByCategoryIdAndPageNumber = function(req, res) {
+var getItemsByCategoryIdAndPageNumber = function(req, res, next) {
 
   var id = req.params.id;
 
@@ -169,7 +171,8 @@ var getItemsByCategoryIdAndPageNumber = function(req, res) {
         currentCategory: currentCategory,
         pageNumber: pageNumber,
         isCategory: true,
-        res: res
+        res: res,
+        next: next
       };
       initCategoriesByObject(paramObject);
     });
