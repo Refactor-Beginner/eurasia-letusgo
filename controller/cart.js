@@ -109,7 +109,6 @@ var changeCartItem = function(req, res, next) {
 var removeCartItem = function(req, res, next) {
   var cartItemId = req.params.cartItemId;
   var cartId = '551cc282a6b79c584b59bc0f';
-
   var cart;
 
   Cart.findById(cartId)
@@ -130,7 +129,6 @@ var removeCartItem = function(req, res, next) {
     })
     .then(function(cartItems) {
       res.send({cart: cart, total: cart.getTotal(cartItems)});
-      //res.send({status: 200, data: {cart: cart, total: cart.getTotal(cartItems)}});
     })
     .onReject(function(err){
       next(err);
