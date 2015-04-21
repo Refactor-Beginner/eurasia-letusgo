@@ -6,6 +6,7 @@ describe('cart', function() {
 
   var resMock;
   var reqMock;
+  var next;
 
   beforeEach(function(done){
 
@@ -108,7 +109,7 @@ describe('cart', function() {
         done();
       };
 
-      cartController.removeCartItem(reqMock, resMock);
+      cartController.removeCartItem(reqMock, resMock, next);
     });
   });
 

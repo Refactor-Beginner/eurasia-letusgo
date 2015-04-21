@@ -118,50 +118,35 @@ var changeCartItem = function(req, res, next) {
 };
 
 
-var removeCartItem = function(req, res) {
+var removeCartItem = function(req, res, next) {
   var cartItemId = req.params.cartItemId;
   var cartId = '551cc282a6b79c584b59bc0f';
 
-  Cart.findById(cartId, function(err, cart) {
-    if(err) {
-      throw err;
-    }
-    cart.cartItems = _.remove(cart.cartItems, function(cartItem) {
-      return cartItem.toString() !== cartItemId;
-    });
+  var cart;
 
-    CartItem.remove({_id: cartItemId}, function() {
+  Cart.findById(cartId)
+    .exec()
+    .then(function(cartInDatabase){
 
-      cart.save(function(err, cart) {
-        if(err) {
-          throw err;
-        }
-        CartItem.find()
-          .populate('item')
-          .exec(function(err, cartItems) {
-
-            res.send({cart: cart, total: cart.getTotal(cartItems)});
-          });
+      cart = cartInDatabase;
+      cart.cartItems = _.remove(cart.cartItems, function(cartItem) {
+        return cartItem.toString() !== cartItemId;
       });
+    })
+    .then(CartItem.remove({_id: cartItemId}).exec())
+    .then(function(){
+      Cart.update({_id: cartId}, {cartItems: cart.cartItems}).exec();
+    })
+    .then(function(){
+      return CartItem.find().populate('item').exec();
+    })
+    .then(function(cartItems) {
+      res.send({cart: cart, total: cart.getTotal(cartItems)});
+      //res.send({status: 200, data: {cart: cart, total: cart.getTotal(cartItems)}});
+    })
+    .onReject(function(err){
+      next(err);
     });
-  });
-
-  //Cart.findById(cartId)
-  //  .exec()
-  //  .then(function(cart){
-  //
-  //    return _.remove(cart.cartItems, function(cartItem) {
-  //      return cartItem.toString() !== cartItemId;
-  //    });
-  //  })
-  //  .then(CartItem.remove({_id: cartItemId}))
-  //  .then(Cart.save)
-  //  .then(function(){
-  //    return CartItem.find().populate('item').exec();
-  //  })
-  //  .then(function(cartItems){
-  //    res.send({cart: cart, total: cart.getTotal(cartItems)});
-  //  });
 };
 
 var getAmount = function(req, res) {
