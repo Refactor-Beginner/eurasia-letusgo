@@ -137,7 +137,7 @@ var removeCartItem = function(req, res, next) {
     });
 };
 
-var getAmount = function(req, res) {
+var getAmount = function(req, res, next) {
   var cartId = '551cc282a6b79c584b59bc0f';
 
   Cart.findById(cartId)
@@ -148,6 +148,9 @@ var getAmount = function(req, res) {
       }, 0);
 
       res.send({amount: count});
+    })
+    .onReject(function(err){
+      next(err);
     });
 };
 
