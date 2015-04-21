@@ -47,7 +47,9 @@ describe('cart', function() {
 
       resMock.send = function(info){
 
-        expect(info).to.equal('修改数量成功！');
+        expect(info.data).to.equal('修改数量成功！');
+        expect(info.status).to.equal(200);
+
         done();
       };
 

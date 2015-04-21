@@ -33,7 +33,7 @@ function createNewCartItem(res, id, number, cart){
   //    data: '成功添加新商品到购物车！'
   //  }));
 //console.log(CartItem.create({item:id, number: number}).exec());
-  
+
   CartItem.create({item:id, number: number}, function(err, cartItem){
     cart.cartItems.push(cartItem._id);
     cart.save(function(){
@@ -80,16 +80,13 @@ var addToCart = function(req, res, next){
 
         number += result.number;
         CartItem.update({item: id}, {$set: {number: number}}, function(){
-          res.send('修改数量成功！');
+          res.send({
+            status: 200,
+            data: '修改数量成功！'
+          });
         });
       }else{
         createNewCartItem(res, id, number, cart);
-        //CartItem.create({item:id, number: number}, function(err, cartItem){
-        //  cart.cartItems.push(cartItem._id);
-        //  cart.save(function(){
-        //    res.send('成功添加新商品到购物车！');
-        //  });
-        //});
       }
     })
     .onReject(function(err){
