@@ -20,21 +20,9 @@ function findCartById(cartId) {
 }
 
 function createNewCartItem(res, id, number, cart){
-  //CartItem.create({item:id, number: number})
-  //  .exec()
-  //  .then(function(cartItem){
-  //    console.log(cartItem + '++++++++++');
-  //
-  //    cart.cartItems.push(cartItem._id);
-  //    cart.save().exec();
-  //  })
-  //  .then(res.send({
-  //    status: 200,
-  //    data: '成功添加新商品到购物车！'
-  //  }));
-//console.log(CartItem.create({item:id, number: number}).exec());
 
   CartItem.create({item:id, number: number}, function(err, cartItem){
+
     cart.cartItems.push(cartItem._id);
     cart.save(function(){
       res.send({status: 200, data: '成功添加新商品到购物车！'});
