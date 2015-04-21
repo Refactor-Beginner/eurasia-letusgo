@@ -54,19 +54,6 @@ describe('GET /', function() {
     itemController.updateItem(reqMock, resMock);
   });
 
-  it('should get test items' ,function(done) {
-
-    reqMock.query = {cartItem: ''};
-
-    resMock.send = function(object) {
-      expect(object).to.have.property('item');
-      expect(object).to.have.property('category');
-
-      done();
-    };
-    itemController.getItems(reqMock, resMock);
-  });
-
   it('should get correct items', function(done) {
 
     reqMock.query = {cartItems: [ { _id: '551cc20e47a654d14a280e9d',
