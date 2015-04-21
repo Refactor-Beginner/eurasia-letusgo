@@ -38,6 +38,24 @@ function renderIndexPage(renderObject) {
   });
 }
 
+function processMainCatgories(categories){
+
+  return _.filter(categories, function(category) {
+
+    category.subCategories = [];
+    return category.parent === null;
+  });
+}
+
+function processItemName(items){
+
+  items.forEach(function(item) {
+    item.shortName = FormatUtil.parseString(item.name, constants.NAME_LENGTH);
+  });
+
+  return items;
+}
+
 function initCategories(paramObject) {
 
   var currentItems;
@@ -47,11 +65,7 @@ function initCategories(paramObject) {
     .exec()
     .then(function(items){
 
-      items.forEach(function(item) {
-
-        item.shortName = FormatUtil.parseString(item.name, constants.NAME_LENGTH);
-      });
-
+      items = processItemName(items);
       currentItems = _.take(_.drop(items, paramObject.start), paramObject.pageSize);
       pageCount = Math.ceil(items.length / paramObject.pageSize);
 
@@ -59,11 +73,7 @@ function initCategories(paramObject) {
     })
     .then(function(categories){
 
-      var mainCategories = _.filter(categories, function(category) {
-
-        category.subCategories = [];
-        return category.parent === null;
-      });
+      var mainCategories = processMainCatgories(categories);
       mainCategories = getSubCategories(categories, mainCategories);
 
       renderIndexPage(
@@ -152,7 +162,6 @@ var getItemsByCategoryId = function(req, res, next) {
 var getItemsByCategoryIdAndPageNumber = function(req, res, next) {
 
   var id = req.params.id;
-
   var pageNumber = req.params.pageNumber;
   var start = (pageNumber - 1) * constants.PAGE_SIZE;
 
