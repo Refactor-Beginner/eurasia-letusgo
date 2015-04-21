@@ -48,7 +48,7 @@ var renderIndentPage = function (req, res, next) {
 
       var total = indent.getTotal(indent.cartItems);
       var shortedCartItems = getShortedCartItems(indent.cartItems);
-  
+
       indent.cartItems.forEach(function (cartItem) {
         cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, constants.NAME_LENGTH);
       });
