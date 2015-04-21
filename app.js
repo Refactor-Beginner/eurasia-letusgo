@@ -34,8 +34,6 @@ function appInit(port) {
   app.use(express.static(path.join(__dirname, './.tmp')));
   app.use(express.static(path.join(__dirname, './')));
   app.use(express.static(path.join(__dirname, './jspm_packages')));
-  // production error handler
-  // no stacktraces leaked to user
 }
 
 if (app.get('env') === 'production') {
@@ -54,6 +52,8 @@ app.get('*', function(req, res, next){
   next(err);
 });
 
+// production error handler
+// no stacktraces leaked to user
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);
 
