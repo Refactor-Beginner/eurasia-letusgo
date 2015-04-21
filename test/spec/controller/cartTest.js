@@ -61,7 +61,8 @@ describe('cart', function() {
 
       resMock.send = function (info){
 
-        expect(info).to.equal('成功添加新商品到购物车！');
+        expect(info.data).to.equal('成功添加新商品到购物车！');
+        expect(info.status).to.equal(200);
         done();
       };
 
