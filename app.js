@@ -55,20 +55,22 @@ app.get('*', function(req, res, next){
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
+
   res.status(err.status || 500);
 
   if(req.header('x-requested-with')){
 
-    res.render('error', {
-      message: err.message,
-      error: err
+    res.send({
+      status: err.status || 500,
+      massage: err.message
     });
   }
 
-  res.send({
-    status: err.status || 500,
-    massage: err.message
+  res.render('error', {
+    message: err.message,
+    error: err
   });
+
   next();
 });
 
