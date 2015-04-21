@@ -64,12 +64,13 @@ app.use(function (err, req, res, next) {
       status: err.status || 500,
       massage: err.message
     });
-  }
+  }else{
 
-  res.render('error', {
-    message: err.message,
-    error: err
-  });
+    res.render('error', {
+      message: err.message,
+      error: err
+    });
+  }
 
   next();
 });
