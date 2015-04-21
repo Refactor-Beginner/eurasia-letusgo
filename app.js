@@ -26,22 +26,15 @@ mongoose.connect('mongodb://localhost/eurasiaLetusgo', function (err) {
     }
 });
 
-function appInit(port) {
-  app.set('port',port);
-  // changes it to use the optimized version for production
-  //app.use(express.static(path.join(__dirname, '/dist')));
-  app.use(express.static(path.join(__dirname, './public')));
-  app.use(express.static(path.join(__dirname, './.tmp')));
-  app.use(express.static(path.join(__dirname, './')));
-  app.use(express.static(path.join(__dirname, './jspm_packages')));
-  // production error handler
-  // no stacktraces leaked to user
-}
-
 if (app.get('env') === 'production') {
-  appInit(80);
+  app.set('port',80);
 }
-appInit(3000);
+app.set('port',3000);
+
+app.use(express.static(path.join(__dirname, './public')));
+app.use(express.static(path.join(__dirname, './.tmp')));
+app.use(express.static(path.join(__dirname, './')));
+app.use(express.static(path.join(__dirname, './jspm_packages')));
 
 // routes
 var router = require('./router');
