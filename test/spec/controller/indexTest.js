@@ -82,30 +82,4 @@ describe('index', function() {
       indexController.getItemsByCategoryId(reqMock, resMock, next);
     });
   });
-
-  describe('getItemsByCategoryIdAndPageNumber', function() {
-
-    it('should return items of a certain and a certain pageNumber', function(done) {
-
-      reqMock.params = {
-
-        id: '5523bc489294d58a8e06c387',
-        pageNumber: 2
-      };
-
-      resMock.render = function(view, object) {
-
-        expect(object.mainCategories.length).to.equal(10);
-        expect(object.currentCategory.isDisplay).to.equal(true);
-        expect(object.items.length).to.equal(0);
-        expect(object.pageCount).to.equal(1);
-        expect(object.currentPage).to.equal(2);
-        expect(object.isCategory).to.equal(true);
-
-        done();
-      };
-
-      indexController.getItemsByCategoryIdAndPageNumber(reqMock, resMock, next);
-    });
-  });
 });
