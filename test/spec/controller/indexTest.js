@@ -80,7 +80,6 @@ describe('index', function() {
       };
 
       indexController.getItemsByCategoryId(reqMock, resMock, next);
-
     });
   });
 
@@ -107,7 +106,6 @@ describe('index', function() {
       };
 
       indexController.getItemsByCategoryIdAndPageNumber(reqMock, resMock, next);
-
     });
   });
 });
