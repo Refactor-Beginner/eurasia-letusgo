@@ -8,6 +8,6 @@ var indexController = require('../../controller/index');
 router.get('/', indexController.getIndexInfo);
 router.get('/index/:pageNumber', indexController.getRecommendItemsByPageNumber);
 router.get('/categories/:id', indexController.getItemsByCategoryId);
-router.get('/categories/:id/:pageNumber', indexController.getItemsByCategoryIdAndPageNumber);
+router.get('/categories/:id/:pageNumber', indexController.getItemsByCategoryId);
 
 module.exports = router;
