@@ -12,7 +12,8 @@ var CategorySchema = new Schema({
   }
 });
 
-CategorySchema.statics.getSubCategories = function (categories, mainCategories){
+function  getSubCategories(categories, mainCategories){
+
   _.forEach(categories, function(category) {
 
     if(category.parent) {
@@ -26,17 +27,21 @@ CategorySchema.statics.getSubCategories = function (categories, mainCategories){
     }
   });
   return mainCategories;
-};
+}
 
-CategorySchema.statics.getMainCategories = function(categories){
+CategorySchema.statics.getCategories = function(categories){
 
-  return _.filter(categories, function(category) {
+  var mainCategories =  _.filter(categories, function(category) {
 
     category.subCategories = [];
     if(!category.parent){
       return category;
     }
   });
+
+  mainCategories = getSubCategories(categories, mainCategories);
+
+  return mainCategories;
 };
 
 module.exports = mongoose.model('Category', CategorySchema);
