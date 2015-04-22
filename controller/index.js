@@ -63,14 +63,11 @@ function processParams(paramObject){
 
 function renderPage(paramObject){
 
-  var categoryList;
-  var itemList;
+  var categoryList, itemList;
   var params = processParams(paramObject);
   var start = (params.pageNumber-1)*constants.PAGE_SIZE;
 
-  Category.find()
-    .populate('parent')
-    .exec()
+  Category.find().populate('parent').exec()
     .then(function(categories) {
 
       categoryList = getCategories(categories);
@@ -95,12 +92,30 @@ function renderPage(paramObject){
     });
 }
 
+function getCurrentCategory( res, next, pageNumber, id){
+
+  Category.findById(id).populate('parent').exec()
+    .then(function(category){
+
+      var currentCategory = category;
+      currentCategory.isDisplay = true;
+
+      return  {
+        query: {category: id},
+        currentCategory: currentCategory,
+        pageNumber: pageNumber,
+        isCategory: true,
+        res: res,
+        next: next
+      };
+    }).then(function(params){
+      renderPage(params);
+    });
+}
+
 var getIndexInfo = function(req, res, next) {
 
-  var params = {
-    res: res,
-    next: next
-  };
+  var params = {res: res, next: next};
 
   renderPage(params);
 };
@@ -120,57 +135,14 @@ var getRecommendItemsByPageNumber = function(req, res, next) {
 var getItemsByCategoryId = function(req, res, next) {
 
   var id = req.params.id;
-  var currentCategory;
+  var pageNumber = req.params.pageNumber || 1;
 
-  Category.findById(id)
-    .populate('parent')
-    .exec(function(err, category) {
-
-      currentCategory = category;
-      currentCategory.isDisplay = true;
-
-      var params = {
-        query: {category: id},
-        res: res,
-        next: next,
-        currentCategory: currentCategory,
-        isCategory: true
-      };
-
-      renderPage(params);
-    });
-};
-
-var getItemsByCategoryIdAndPageNumber = function(req, res, next) {
-
-  var id = req.params.id;
-  var pageNumber = req.params.pageNumber;
-
-  var currentCategory;
-  Category.findById(id)
-    .populate('parent')
-    .exec(function(err, category) {
-
-      currentCategory = category;
-      currentCategory.isDisplay = true;
-
-      var params = {
-        query: {category: id},
-        currentCategory: currentCategory,
-        pageNumber: pageNumber,
-        isCategory: true,
-        res: res,
-        next: next
-      };
-
-      renderPage(params);
-    });
+  getCurrentCategory(res, next, pageNumber, id);
 };
 
 module.exports = {
 
   getIndexInfo: getIndexInfo,
   getRecommendItemsByPageNumber: getRecommendItemsByPageNumber,
-  getItemsByCategoryId: getItemsByCategoryId,
-  getItemsByCategoryIdAndPageNumber: getItemsByCategoryIdAndPageNumber
+  getItemsByCategoryId: getItemsByCategoryId
 };
