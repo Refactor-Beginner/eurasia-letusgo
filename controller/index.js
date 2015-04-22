@@ -22,29 +22,22 @@ function getSubCategories(categories, mainCategories) {
       });
     }
   });
-
   return mainCategories;
 }
 
-function renderIndexPage(renderObject) {
+function getCategories(categories){
 
-  renderObject.res.render('index', {
-    mainCategories: renderObject.mainCategories,
-    currentCategory: renderObject.currentCategory,
-    items: renderObject.items,
-    pageCount: renderObject.pageCount,
-    currentPage: renderObject.pageNumber,
-    isCategory: renderObject.isCategory
-  });
-}
-
-function processMainCatgories(categories){
-
-  return _.filter(categories, function(category) {
+  var mainCategories = _.filter(categories, function(category) {
 
     category.subCategories = [];
-    return category.parent === null;
+    if(!category.parent){
+      return category;
+    }
   });
+
+  mainCategories = getSubCategories(categories, mainCategories);
+
+  return mainCategories;
 }
 
 function processItemName(items){
@@ -56,82 +49,72 @@ function processItemName(items){
   return items;
 }
 
-function initCategories(paramObject) {
-
-  var currentItems;
-  var pageCount;
-
-  Item.find(paramObject.query)
-    .exec()
-    .then(function(items){
-
-      items = processItemName(items);
-      currentItems = _.take(_.drop(items, paramObject.start), paramObject.pageSize);
-      pageCount = Math.ceil(items.length / paramObject.pageSize);
-
-      return Category.find().populate('parent').exec();
-    })
-    .then(function(categories){
-
-      var mainCategories = processMainCatgories(categories);
-      mainCategories = getSubCategories(categories, mainCategories);
-
-      renderIndexPage(
-        {
-          res: paramObject.res,
-          mainCategories: mainCategories,
-          currentCategory: paramObject.currentCategory,
-          items: currentItems,
-          pageCount: pageCount,
-          pageNumber: paramObject.pageNumber,
-          isCategory: paramObject.isCategory
-        });
-    })
-    .onReject(function(err){
-      paramObject.next(err);
-    });
-}
-
-function  initCategoriesByObject (object){
+function processParams(paramObject){
 
   var defaultObject = {
     query: {isRecommend: true},
-    start: 0,
     pageNumber: 1,
-    isCategory: false
+    isCategory: false,
+    currentCategory: {isDisplay: false, name: '', parent: {name: ''}}
   };
 
-  var params = _.assign(defaultObject, object);
-
-  initCategories(params);
+  return  _.assign(defaultObject, paramObject);
 }
-var getIndexInfo = function(req, res, next) {
-  var currentCategory = {isDisplay: false, name: '', parent: {name: ''}};
 
-  var object = {
-    pageSize: constants.PAGE_SIZE,
+function renderPage(paramObject){
+
+  var categoryList;
+  var itemList;
+  var params = processParams(paramObject);
+  var start = (params.pageNumber-1)*constants.PAGE_SIZE;
+
+  Category.find()
+    .populate('parent')
+    .exec()
+    .then(function(categories) {
+
+      categoryList = getCategories(categories);
+    }).then(function() {
+      return Item.find(params.query).skip(start).limit(constants.PAGE_SIZE).exec();
+    }).then(function(items) {
+
+      itemList = processItemName(items);
+      return Item.count(params.query).exec();
+    }).then(function(count) {
+
+      params.res.render('index', {
+        mainCategories: categoryList,
+        currentCategory: params.currentCategory,
+        items: itemList,
+        pageCount: Math.ceil(count/constants.PAGE_SIZE),
+        currentPage: params.pageNumber,
+        isCategory: params.isCategory
+      });
+    }).onReject(function(err){
+      params.next(err);
+    });
+}
+
+var getIndexInfo = function(req, res, next) {
+
+  var params = {
     res: res,
-    next: next,
-    currentCategory: currentCategory
+    next: next
   };
-  initCategoriesByObject(object);
+
+  renderPage(params);
 };
 
 var getRecommendItemsByPageNumber = function(req, res, next) {
 
   var pageNumber = req.params.pageNumber;
-  var start = (pageNumber - 1) * constants.PAGE_SIZE;
-  var currentCategory = {isDisplay: false, name: '', parent: {name: ''}};
 
-  var object = {
-    pageSize:  constants.PAGE_SIZE,
-    start: start,
+  var params = {
     res: res,
     next: next,
-    pageNumber: pageNumber,
-    currentCategory: currentCategory
+    pageNumber: pageNumber
   };
-  initCategoriesByObject(object);
+  renderPage(params);
 };
 
 var getItemsByCategoryId = function(req, res, next) {
@@ -146,16 +129,15 @@ var getItemsByCategoryId = function(req, res, next) {
       currentCategory = category;
       currentCategory.isDisplay = true;
 
-      var paramObject = {
+      var params = {
         query: {category: id},
-        pageSize: constants.PAGE_SIZE,
         res: res,
         next: next,
         currentCategory: currentCategory,
         isCategory: true
       };
 
-      initCategoriesByObject(paramObject);
+      renderPage(params);
     });
 };
 
@@ -163,7 +145,6 @@ var getItemsByCategoryIdAndPageNumber = function(req, res, next) {
 
   var id = req.params.id;
   var pageNumber = req.params.pageNumber;
-  var start = (pageNumber - 1) * constants.PAGE_SIZE;
 
   var currentCategory;
   Category.findById(id)
@@ -173,17 +154,16 @@ var getItemsByCategoryIdAndPageNumber = function(req, res, next) {
       currentCategory = category;
       currentCategory.isDisplay = true;
 
-      var paramObject = {
+      var params = {
         query: {category: id},
-        start: start,
-        pageSize: constants.PAGE_SIZE,
         currentCategory: currentCategory,
         pageNumber: pageNumber,
         isCategory: true,
         res: res,
         next: next
       };
-      initCategoriesByObject(paramObject);
+
+      renderPage(params);
     });
 };
 
