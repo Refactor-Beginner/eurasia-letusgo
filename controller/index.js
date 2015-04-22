@@ -8,23 +8,6 @@ var Item = require('../model/item');
 var FormatUtil = require('../util/formatUtil');
 var constants = require('../util/constants');
 
-function getSubCategories(categories, mainCategories) {
-
-  _.forEach(categories, function(category) {
-
-    if(category.parent) {
-
-      _.forEach(mainCategories, function(mainCategory) {
-
-        if(category.parent.name === mainCategory.name) {
-          mainCategory.subCategories.push(category);
-        }
-      });
-    }
-  });
-  return mainCategories;
-}
-
 function getCategories(categories){
 
   var mainCategories = _.filter(categories, function(category) {
@@ -35,7 +18,7 @@ function getCategories(categories){
     }
   });
 
-  mainCategories = getSubCategories(categories, mainCategories);
+  mainCategories = Category.getSubCategories(categories, mainCategories);
 
   return mainCategories;
 }
