@@ -10,14 +10,7 @@ var constants = require('../util/constants');
 
 function getCategories(categories){
 
-  var mainCategories = _.filter(categories, function(category) {
-
-    category.subCategories = [];
-    if(!category.parent){
-      return category;
-    }
-  });
-
+  var mainCategories = Category.getMainCategories(categories);
   mainCategories = Category.getSubCategories(categories, mainCategories);
 
   return mainCategories;
