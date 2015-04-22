@@ -28,4 +28,15 @@ CategorySchema.statics.getSubCategories = function (categories, mainCategories){
   return mainCategories;
 };
 
+CategorySchema.statics.getMainCategories = function(categories){
+
+  return _.filter(categories, function(category) {
+
+    category.subCategories = [];
+    if(!category.parent){
+      return category;
+    }
+  });
+};
+
 module.exports = mongoose.model('Category', CategorySchema);
