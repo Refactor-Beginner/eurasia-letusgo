@@ -8,14 +8,6 @@ var Item = require('../model/item');
 var FormatUtil = require('../util/formatUtil');
 var constants = require('../util/constants');
 
-function getCategories(categories){
-
-  var mainCategories = Category.getMainCategories(categories);
-  mainCategories = Category.getSubCategories(categories, mainCategories);
-
-  return mainCategories;
-}
-
 function processItemName(items){
 
   items.forEach(function(item) {
@@ -46,7 +38,7 @@ function renderPage(paramObject){
   Category.find().populate('parent').exec()
     .then(function(categories) {
 
-      categoryList = getCategories(categories);
+      categoryList = Category.getCategories(categories);
     }).then(function() {
       return Item.find(params.query).skip(start).limit(constants.PAGE_SIZE).exec();
     }).then(function(items) {
