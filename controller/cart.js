@@ -44,6 +44,7 @@ var getCart = function(req, res, next){
 
     findCartById(cartId)
     .then(function(cart){
+
       _.forEach(cart.cartItems, function(cartItem) {
         cartItem.item.shortName = FormatUtil.parseString(cartItem.item.name, constants.NAME_LENGTH);
       });
@@ -104,7 +105,6 @@ var changeCartItem = function(req, res, next) {
       next(err);
     });
 };
-
 
 var removeCartItem = function(req, res, next) {
   var cartItemId = req.params.cartItemId;
